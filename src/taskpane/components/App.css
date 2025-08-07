@@ -1,0 +1,78 @@
+.app-root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+ 
+.app-form {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  flex: 1;
+}
+ 
+.app-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+ 
+.app-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #323130;
+}
+ 
+.app-input {
+  padding: 8px 12px;
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+ 
+.app-input:focus {
+  outline: none;
+  border-color: #0078d4;
+  box-shadow: 0 0 0 1px #0078d4;
+}
+ 
+.app-button-group {
+  display: flex;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 20px;
+}
+ 
+.app-save-button {
+  background-color: #0078d4;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+ 
+.app-save-button:hover {
+  background-color: #106ebe;
+}
+ 
+.app-cancel-button {
+  background-color: transparent;
+  color: #0078d4;
+  border: 1px solid #0078d4;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+ 
+.app-cancel-button:hover {
+  background-color: #f3f2f1;
+}
