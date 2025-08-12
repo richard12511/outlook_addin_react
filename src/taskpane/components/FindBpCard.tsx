@@ -14,14 +14,28 @@ import {
   tokens,
 } from "@fluentui/react-components";
 
-const FindBpCard: React.FC = (_props: any) => {
+export interface FindBpCardProps {
+  onFind: (cardCode: string, name: string, email: string) => void;
+  onBrowse: (cardCode: string, name: string, email: string) => void;
+}
+
+const FindBpCard: React.FC = ({ onFind, onBrowse }: FindBpCardProps) => {
   const styles = useStyles();
   const [cardCode, setCardCode] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
 
+  const handleFindClicked = () => {
+    console.log("Find clicked with:", { cardCode, name, email });
+    onFind(cardCode, name, email);
+  };
+
+  const handleBrowseClicked = () => {
+    onBrowse(cardCode, name, email);
+  };
+
   return (
-    <Card className={styles.cardButtonGroup}>
+    <Card className={styles.bpCard}>
       <Text weight="semibold" size={400} style={{ marginBottom: tokens.spacingVerticalS }}>
         Find Business Partner
       </Text>
@@ -59,7 +73,7 @@ const FindBpCard: React.FC = (_props: any) => {
           </Label>
           <Input
             id="email-input"
-            value={name}
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter Email"
             size="small"
@@ -67,11 +81,11 @@ const FindBpCard: React.FC = (_props: any) => {
         </div>
 
         <div className={styles.cardButtonGroup}>
-          <Button appearance="outline" size="small" onClick={() => console.log("find clicked")}>
+          <Button appearance="outline" size="small" onClick={handleFindClicked}>
             Find
           </Button>
 
-          <Button appearance="outline" size="small" onClick={() => console.log("browse clicked")}>
+          <Button appearance="outline" size="small" onClick={handleBrowseClicked}>
             Browse
           </Button>
         </div>
