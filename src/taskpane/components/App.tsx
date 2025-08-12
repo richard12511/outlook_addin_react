@@ -17,6 +17,7 @@ import {
   tokens,
 } from "@fluentui/react-components";
 import FindBpCard from "./FindBpCard";
+import FindProjectCard from "./FindProjectCard";
 
 export interface AppProps {
   title: string;
@@ -60,6 +61,10 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     console.log("Browse clicked in parent with:", { cardCode, name, email });
 
     //make browse call
+  };
+
+  const handleProjectFind = (projectCode: string) => {
+    console.log("Project Find clicked with: ", { projectCode });
   };
 
   useEffect(() => {
@@ -160,6 +165,8 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
         </div>
 
         <FindBpCard onFind={handleFind} onBrowse={handleBrowse} />
+
+        <FindProjectCard onFind={handleProjectFind} />
 
         <div className={styles.buttonGroup}>
           <Button appearance="primary" onClick={handleSave} disabled={isLoading}>
