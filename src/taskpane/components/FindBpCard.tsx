@@ -19,7 +19,7 @@ export interface FindBpCardProps {
   onBrowse: (cardCode: string, name: string, email: string) => void;
 }
 
-const FindBpCard: React.FC = ({ onFind, onBrowse }: FindBpCardProps) => {
+const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardProps) => {
   const styles = useStyles();
   const [cardCode, setCardCode] = useState<string>("");
   const [name, setName] = useState<string>("");

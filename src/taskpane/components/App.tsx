@@ -50,6 +50,18 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     setSeclectedCategory(data.optionValue || "");
   };
 
+  const handleFind = (cardCode: string, name: string, email: string) => {
+    console.log("Find clicked in parent with: ", { cardCode, name, email });
+
+    //make api call to search for bp
+  };
+
+  const handleBrowse = (cardCode: string, name: string, email: string) => {
+    console.log("Browse clicked in parent with:", { cardCode, name, email });
+
+    //make browse call
+  };
+
   useEffect(() => {
     if (isOfficeInitialized) {
       loadEmailSubject();
@@ -147,7 +159,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           </Dropdown>
         </div>
 
-        <FindBpCard />
+        <FindBpCard onFind={handleFind} onBrowse={handleBrowse} />
 
         <div className={styles.buttonGroup}>
           <Button appearance="primary" onClick={handleSave} disabled={isLoading}>
