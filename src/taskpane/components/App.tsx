@@ -16,6 +16,7 @@ import {
   Option,
   tokens,
 } from "@fluentui/react-components";
+import FindBpCard from "./FindBpCard";
 
 export interface AppProps {
   title: string;
@@ -146,6 +147,8 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           </Dropdown>
         </div>
 
+        <FindBpCard />
+
         <div className={styles.buttonGroup}>
           <Button appearance="primary" onClick={handleSave} disabled={isLoading}>
             Save
@@ -155,35 +158,6 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           </Button>
         </div>
       </div>
-      {/* <div className="app-form">
-        <div className="app-input-group">
-          <label className="app-label" htmlFor="subject-input">
-            Subject:
-          </label>
-
-          {isLoading ? (
-            <div>Loading subject...</div>
-          ) : (
-            <input
-              id="subject-input"
-              type="text"
-              className="app-input"
-              value={subject}
-              onChange={(e) => setSubject(e.target.value)}
-              placeholder="Enter email subject"
-            />
-          )}
-        </div>
-
-        <div className="app-button-group">
-          <button className="app-save-button" onClick={handleSave}>
-            Save
-          </button>
-          <button className="app-cancel-button" onClick={handleCancel}>
-            Cancel
-          </button>
-        </div>
-      </div> */}
     </div>
   );
 };
