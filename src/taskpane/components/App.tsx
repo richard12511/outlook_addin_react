@@ -18,10 +18,9 @@ import {
   tokens,
   TabValue,
 } from "@fluentui/react-components";
-import FindBpCard from "./FindBpCard";
-import FindProjectCard from "./FindProjectCard";
 import BpModal, { BusinessPartner } from "./BpModal";
 import Tabs from "./Tabs";
+import { searchBusinessPartners } from "../../api/searchBusinessPartners";
 
 export interface AppProps {
   title: string;
@@ -76,62 +75,20 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   };
 
   const handleFind = async (cardCode: string, name: string, email: string) => {
-    console.log("Find clicked in parent with: ", { cardCode, name, email });
-
     try {
-      const username = "SAP-Online-Tasker";
-      const password = "33-wretch-z*yWv-%z&AhkS";
+      const results = await searchBusinessPartners(cardCode, name, email);
 
-      //Create Basic Auth Header
-      const credentials = btoa(`${username}:${password}`);
-      // console.log(credentials);
-      console.log("Base64 credentials:", credentials);
-      const authHeader = `Basic ${credentials}`;
+      setSearchResults(results);
+      setLastSearchQuery(name || cardCode || email || "search");
+      setIsModalOpen(true);
 
-      // Debug: Decode it back to verify
-      const decoded = atob(credentials);
-      console.log("Decoded back:", decoded);
-
-      //Build the query string
-      const params = new URLSearchParams();
-      if (cardCode) params.append("cardCode", cardCode);
-      if (name) params.append("name", name);
-      if (email) params.append("email", email);
-
-      const baseUrl = "http://localhost:1025/OutlookAddin/SearchBps";
-      const fullUrl = `${baseUrl}?${params.toString()}`;
-      // const fullUrl = `http://localhost:1025/Countries`;
-
-      console.log("Making http request to:", fullUrl);
-
-      const response = await fetch(fullUrl, {
-        method: "GET",
-        headers: {
-          Authorization: authHeader,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log("BP found: ", data);
-
-        setSearchResults(data.bps || []);
-        setLastSearchQuery(name || cardCode || email || "search");
-        setIsModalOpen(true);
-
-        setMessage(`Found ${data.bps?.length || 0} results`);
-        setMessageType("success");
-        //Handle success
-      } else {
-        console.error("HTTP Error: ", response.status, response.statusText);
-        setMessage("Network error: Unable to connect to server");
-        setMessageType("error");
-      }
+      setMessage(`Found ${results.length} results`);
+      setMessageType("success");
     } catch (error) {
-      console.error("Network error:", error);
+      console.error("Search error:", error);
+      setMessage(error instanceof Error ? error.message : "Search failed");
+      setMessageType("error");
     }
-    //make api call to search for bp
   };
 
   const handleBpSelect = (bp: BusinessPartner) => {
