@@ -31,19 +31,12 @@ const Tabs: React.FC<TabsProps> = ({
   onTabChange,
 }) => {
   const styles = useStyles();
-  //   const [currentTab, setCurrentTab] = useState<TabValue>(activeTab);
 
   const handleTabSelect = (_event: any, data: { value: TabValue }) => {
-    // setCurrentTab(data.value);
     if (onTabChange) {
       onTabChange(data.value);
     }
   };
-
-  //Whenever active tab changes in our parent, we need to set the state here too
-  //   useEffect(() => {
-  //     setCurrentTab(activeTab);
-  //   }, [activeTab]);
 
   return (
     <div className={styles.tabContainer}>
