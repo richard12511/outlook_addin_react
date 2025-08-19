@@ -51,9 +51,54 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     setSeclectedCategory(data.optionValue || "");
   };
 
-  const handleFind = (cardCode: string, name: string, email: string) => {
+  const handleFind = async (cardCode: string, name: string, email: string) => {
     console.log("Find clicked in parent with: ", { cardCode, name, email });
 
+    try {
+      const username = "username here";
+      const password = "password here";
+
+      //Create Basic Auth Header
+      const credentials = btoa(`${username}:${password}`);
+      // console.log(credentials);
+      console.log("Base64 credentials:", credentials);
+      const authHeader = `Basic ${credentials}`;
+
+      // Debug: Decode it back to verify
+      const decoded = atob(credentials);
+      console.log("Decoded back:", decoded);
+
+      //Build the query string
+      const params = new URLSearchParams();
+      if (cardCode) params.append("cardCode", cardCode);
+      if (name) params.append("name", name);
+      if (email) params.append("email", email);
+
+      const baseUrl = "http://localhost:1025/OutlookAddin/SearchBps";
+      const fullUrl = `${baseUrl}?${params.toString()}`;
+      // const fullUrl = `http://localhost:1025/Countries`;
+
+      console.log("Making http request to:", fullUrl);
+
+      const response = await fetch(fullUrl, {
+        method: "GET",
+        headers: {
+          Authorization: authHeader,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("BP found: ", data);
+
+        //Handle success
+      } else {
+        console.error("HTTP Error: ", response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+    }
     //make api call to search for bp
   };
 

@@ -42,7 +42,7 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
 
       <div className={styles.cardContent}>
         <div className={styles.inputGroup}>
-          <Label htmlFor="card-code-input" size="medium">
+          <Label htmlFor="card-code-input" size="small">
             CardCode:
           </Label>
           <Input
@@ -55,7 +55,7 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
         </div>
 
         <div className={styles.inputGroup}>
-          <Label htmlFor="name-input" size="medium">
+          <Label htmlFor="name-input" size="small">
             Name:
           </Label>
           <Input
@@ -68,7 +68,7 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
         </div>
 
         <div className={styles.inputGroup}>
-          <Label htmlFor="email-input" size="medium">
+          <Label htmlFor="email-input" size="small">
             Email:
           </Label>
           <Input
