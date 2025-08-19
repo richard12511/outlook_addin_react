@@ -13,6 +13,7 @@ import {
   CardPreview,
   Text,
   Dropdown,
+  MessageBar,
   Option,
   tokens,
 } from "@fluentui/react-components";
@@ -63,8 +64,8 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     console.log("Find clicked in parent with: ", { cardCode, name, email });
 
     try {
-      const username = "username here";
-      const password = "password here";
+      const username = "un";
+      const password = "pw";
 
       //Create Basic Auth Header
       const credentials = btoa(`${username}:${password}`);
@@ -192,11 +193,11 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       {/* <Header logo={"../../../assets/logo-filled.png"} title="Save Email" message="" /> */}
 
       {/* Show a message if one exists */}
-      {/* { message && (
-        <Message intent={messageType} style={{ marginBottom: tokens.spacingVerticalS }}>
+      {message && (
+        <MessageBar intent={messageType} style={{ marginBottom: tokens.spacingVerticalS }}>
           {message}
-        </Message>
-      )} */}
+        </MessageBar>
+      )}
       <Card className={styles.header}>
         <CardHeader
           header={

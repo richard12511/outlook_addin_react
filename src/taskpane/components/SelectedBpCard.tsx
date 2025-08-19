@@ -1,18 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
-import {
-  makeStyles,
-  Button,
-  Input,
-  Label,
-  Card,
-  CardHeader,
-  CardPreview,
-  Text,
-  Dropdown,
-  Option,
-  tokens,
-} from "@fluentui/react-components";
+import { makeStyles, Input, Label, Card, Text, tokens } from "@fluentui/react-components";
 
 export interface SelectedBpCardProps {
   cardCode: string;
