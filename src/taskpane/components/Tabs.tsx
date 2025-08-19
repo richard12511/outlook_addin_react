@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
+import { useEffect } from "react";
 import { makeStyles, Tab, TabList, TabValue, tokens } from "@fluentui/react-components";
 import FindBpCard from "./FindBpCard";
 import SelectedBpCard from "./SelectedBpCard";
@@ -30,18 +31,23 @@ const Tabs: React.FC<TabsProps> = ({
   onTabChange,
 }) => {
   const styles = useStyles();
-  const [currentTab, setCurrentTab] = useState<TabValue>(activeTab);
+  //   const [currentTab, setCurrentTab] = useState<TabValue>(activeTab);
 
-  const handleTabSelect = (event: any, data: { value: TabValue }) => {
-    setCurrentTab(data.value);
+  const handleTabSelect = (_event: any, data: { value: TabValue }) => {
+    // setCurrentTab(data.value);
     if (onTabChange) {
       onTabChange(data.value);
     }
   };
 
+  //Whenever active tab changes in our parent, we need to set the state here too
+  //   useEffect(() => {
+  //     setCurrentTab(activeTab);
+  //   }, [activeTab]);
+
   return (
     <div className={styles.tabContainer}>
-      <TabList selectedValue={currentTab} onTabSelect={handleTabSelect} className={styles.tabList}>
+      <TabList selectedValue={activeTab} onTabSelect={handleTabSelect} className={styles.tabList}>
         <Tab value="search">Search</Tab>
         <Tab value="selected" disabled={!selectedBP}>
           Selected BP
@@ -49,14 +55,14 @@ const Tabs: React.FC<TabsProps> = ({
       </TabList>
 
       <div className={styles.tabContent}>
-        {currentTab === "search" && (
+        {activeTab === "search" && (
           <div>
             <FindBpCard onFind={onFindClick} onBrowse={onBrowse} />
             <FindProjectCard onFind={onProjectFindClick} />
           </div>
         )}
 
-        {currentTab === "selected" && selectedBP && (
+        {activeTab === "selected" && selectedBP && (
           <SelectedBpCard
             cardCode={selectedBP.cardCode}
             name={selectedBP.name}

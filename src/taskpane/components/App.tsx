@@ -16,10 +16,12 @@ import {
   MessageBar,
   Option,
   tokens,
+  TabValue,
 } from "@fluentui/react-components";
 import FindBpCard from "./FindBpCard";
 import FindProjectCard from "./FindProjectCard";
 import BpModal, { BusinessPartner } from "./BpModal";
+import Tabs from "./Tabs";
 
 export interface AppProps {
   title: string;
@@ -46,6 +48,19 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   const [searchResults, setSearchResults] = useState<BusinessPartner[]>([]);
   const [lastSearchQuery, setLastSearchQuery] = useState<string>("");
 
+  //Selected BP state
+  const [selectedBP, setSelectedBP] = useState<{
+    cardCode: string;
+    name: string;
+    city: string;
+    country: string;
+    involvements: string[];
+    projectCode: string;
+  } | null>(null);
+
+  //Tab state
+  const [activeTab, setActiveTab] = useState<TabValue>("search");
+
   const handleSave = () => {
     console.log("Save clicked with subject:", subject);
     alert("Save clicked");
@@ -64,8 +79,8 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     console.log("Find clicked in parent with: ", { cardCode, name, email });
 
     try {
-      const username = "un";
-      const password = "pw";
+      const username = "SAP-Online-Tasker";
+      const password = "33-wretch-z*yWv-%z&AhkS";
 
       //Create Basic Auth Header
       const credentials = btoa(`${username}:${password}`);
@@ -121,13 +136,28 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
 
   const handleBpSelect = (bp: BusinessPartner) => {
     console.log("BP selected in App:", bp);
+    const selectedBPData = {
+      cardCode: bp.CardCode,
+      name: bp.CardName,
+      city: "", //todo
+      country: "", //todo
+      involvements: [], //todo
+      projectCode: "", //todo
+    };
+    //Fill the SelectedBpCard data with results and switch tabs
+    setSelectedBP(selectedBPData);
 
-    //Fill the SelectedBpCard data with results
+    console.log("bp selected:", selectedBPData);
+    setActiveTab("selected");
 
     setMessage(`Selected: ${bp.CardName} (${bp.CardCode})`);
     setMessageType("success");
 
     setTimeout(() => setMessage(""), 3000);
+  };
+
+  const handleTabChange = (tabValue: TabValue) => {
+    setActiveTab(tabValue);
   };
 
   const handleCloseModal = () => {
@@ -201,7 +231,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       <Card className={styles.header}>
         <CardHeader
           header={
-            <Text weight="semibold" size={500}>
+            <Text weight="semibold" size={400}>
               {title}
             </Text>
           }
@@ -249,10 +279,17 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
             ))}
           </Dropdown>
         </div>
+        <Tabs
+          onFindClick={handleFind}
+          onBrowse={handleBrowse}
+          onProjectFindClick={handleProjectFind}
+          selectedBP={selectedBP}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+        />
+        {/* <FindBpCard onFind={handleFind} onBrowse={handleBrowse} />
 
-        <FindBpCard onFind={handleFind} onBrowse={handleBrowse} />
-
-        <FindProjectCard onFind={handleProjectFind} />
+        <FindProjectCard onFind={handleProjectFind} /> */}
 
         <div className={styles.buttonGroup}>
           <Button appearance="primary" onClick={handleSave} disabled={isLoading}>
@@ -311,51 +348,3 @@ const useStyles = makeStyles({
 });
 
 export default App;
-
-// import * as React from "react";
-// import Header from "./Header";
-// import HeroList, { HeroListItem } from "./HeroList";
-// import TextInsertion from "./TextInsertion";
-// import { makeStyles } from "@fluentui/react-components";
-// import { Ribbon24Regular, LockOpen24Regular, DesignIdeas24Regular } from "@fluentui/react-icons";
-// import { insertText } from "../taskpane";
-
-// interface AppProps {
-//   title: string;
-// }
-
-// const useStyles = makeStyles({
-//   root: {
-//     minHeight: "100vh",
-//   },
-// });
-
-// const App: React.FC<AppProps> = (props: AppProps) => {
-//   const styles = useStyles();
-//   // The list items are static and won't change at runtime,
-//   // so this should be an ordinary const, not a part of state.
-//   const listItems: HeroListItem[] = [
-//     {
-//       icon: <Ribbon24Regular />,
-//       primaryText: "Achieve more with Office integration",
-//     },
-//     {
-//       icon: <LockOpen24Regular />,
-//       primaryText: "Unlock features and functionality",
-//     },
-//     {
-//       icon: <DesignIdeas24Regular />,
-//       primaryText: "Create and visualize like a pro",
-//     },
-//   ];
-
-//   return (
-//     <div className={styles.root}>
-//       <Header logo="assets/logo-filled.png" title={props.title} message="Welcome" />
-//       <HeroList message="Discover what this add-in can do for you today!" items={listItems} />
-//       <TextInsertion insertText={insertText} />
-//     </div>
-//   );
-// };
-
-// export default App;
