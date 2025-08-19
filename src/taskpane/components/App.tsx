@@ -118,6 +118,23 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     //make api call to search for bp
   };
 
+  const handleBpSelect = (bp: BusinessPartner) => {
+    console.log("BP selected in App:", bp);
+
+    //Fill the SelectedBpCard data with results
+
+    setMessage(`Selected: ${bp.CardName} (${bp.CardCode})`);
+    setMessageType("success");
+
+    setTimeout(() => setMessage(""), 3000);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSearchResults([]);
+    setLastSearchQuery("");
+  };
+
   const handleBrowse = (cardCode: string, name: string, email: string) => {
     console.log("Browse clicked in parent with:", { cardCode, name, email });
 
@@ -173,6 +190,13 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   return (
     <div className={styles.root}>
       {/* <Header logo={"../../../assets/logo-filled.png"} title="Save Email" message="" /> */}
+
+      {/* Show a message if one exists */}
+      {/* { message && (
+        <Message intent={messageType} style={{ marginBottom: tokens.spacingVerticalS }}>
+          {message}
+        </Message>
+      )} */}
       <Card className={styles.header}>
         <CardHeader
           header={
@@ -238,6 +262,15 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           </Button>
         </div>
       </div>
+
+      {/* Business Partner Modal */}
+      <BpModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSelect={handleBpSelect}
+        searchResults={searchResults}
+        searchQuery={lastSearchQuery}
+      />
     </div>
   );
 };
