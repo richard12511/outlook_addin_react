@@ -18,6 +18,7 @@ import {
 } from "@fluentui/react-components";
 import FindBpCard from "./FindBpCard";
 import FindProjectCard from "./FindProjectCard";
+import BpModal, { BusinessPartner } from "./BpModal";
 
 export interface AppProps {
   title: string;
@@ -36,6 +37,13 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   const [subject, setSubject] = useState<string>("");
   const [selectedCategory, setSeclectedCategory] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [message, setMessage] = useState<string>("");
+  const [messageType, setMessageType] = useState<"info" | "success" | "warning" | "error">("info");
+
+  //Results Modal
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [searchResults, setSearchResults] = useState<BusinessPartner[]>([]);
+  const [lastSearchQuery, setLastSearchQuery] = useState<string>("");
 
   const handleSave = () => {
     console.log("Save clicked with subject:", subject);
@@ -92,9 +100,17 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
         const data = await response.json();
         console.log("BP found: ", data);
 
+        setSearchResults(data.bps || []);
+        setLastSearchQuery(name || cardCode || email || "search");
+        setIsModalOpen(true);
+
+        setMessage(`Found ${data.bps?.length || 0} results`);
+        setMessageType("success");
         //Handle success
       } else {
         console.error("HTTP Error: ", response.status, response.statusText);
+        setMessage("Network error: Unable to connect to server");
+        setMessageType("error");
       }
     } catch (error) {
       console.error("Network error:", error);
