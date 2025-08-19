@@ -146,6 +146,8 @@ const BpModal: React.FC<BpModalProps> = ({
   );
 };
 
+export default BpModal;
+
 const useStyles = makeStyles({
   modal: {
     width: "600px",
