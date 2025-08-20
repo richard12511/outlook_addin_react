@@ -17,8 +17,8 @@ export interface GetInvolvementsResponse {
 }
 
 const API_BASE_URL = "http://localhost:1025";
-const USERNAME = "un";
-const PASSWORD = "pw";
+const USERNAME = "";
+const PASSWORD = "";
 
 export const searchBusinessPartners = async (
   cardCode?: string,
