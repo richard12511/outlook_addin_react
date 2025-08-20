@@ -17,8 +17,8 @@ export interface GetInvolvementsResponse {
 }
 
 const API_BASE_URL = "http://localhost:1025";
-const USERNAME = "";
-const PASSWORD = "";
+const USERNAME = "SAP-Online-Tasker";
+const PASSWORD = "33-wretch-z*yWv-%z&AhkS";
 
 export const searchBusinessPartners = async (
   cardCode?: string,

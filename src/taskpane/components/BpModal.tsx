@@ -70,213 +70,116 @@ const BpModal: React.FC<BpModalProps> = ({
   return (
     <Dialog open={isOpen}>
       <DialogSurface className={styles.modal}>
-        <DialogBody>
-          <div className={styles.header}>
-            <DialogTitle>
-              <Text size={500} weight="semibold">
-                Select Business Partner
-              </Text>
-            </DialogTitle>
-            <Button
-              appearance="subtle"
-              aria-label="close"
-              icon={<Dismiss24Regular />}
-              onClick={onClose}
-            />
-          </div>
-
-          <DialogContent>
-            <div className={styles.searchInfo}>
-              <Text size={300}>
-                Found{" "}
-                <Badge appearance="filled" color="brand">
-                  {searchResults.length}
-                </Badge>{" "}
-                results for "{searchQuery}"
-              </Text>
-            </div>
-
-            <div className={styles.tableContainer}>
-              <Table arial-label="Business Partner Results" size="extra-small">
-                <TableHeader>
-                  <TableRow>
-                    <TableHeaderCell>CardCode</TableHeaderCell>
-                    <TableHeaderCell>Company Name</TableHeaderCell>
-                    <TableHeaderCell>Email Address</TableHeaderCell>
-                    <TableHeaderCell>Location</TableHeaderCell>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {searchResults.map((bp, index) => (
-                    <TableRow
-                      key={bp.CardCode}
-                      className={`${styles.tableRow} ${
-                        selectedRowIndex === index ? styles.selectedRow : ""
-                      }`}
-                      onClick={() => handleBpSelect(bp, index)}
-                    >
-                      <TableCell>
-                        <TableCellLayout className={styles.cardCodeCell}>
-                          {bp.CardCode}
-                        </TableCellLayout>
-                      </TableCell>
-                      <TableCell>
-                        <TableCellLayout className={styles.companyNameCell}>
-                          {bp.CardName}
-                        </TableCellLayout>
-                      </TableCell>
-                      <TableCell>
-                        <TableCellLayout
-                          className={`${styles.emailCell} ${
-                            !bp.Email || bp.Email.trim() === "" ? styles.noEmailText : ""
-                          }`}
-                        >
-                          {formatEmail(bp.Email)}
-                        </TableCellLayout>
-                      </TableCell>
-                      <TableCell>
-                        <TableCellLayout className={styles.locationCell}>
-                          {formatLocation(bp.City, bp.Country)}
-                        </TableCellLayout>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </DialogContent>
-
-          <div className={styles.footer}>
-            <Text size={200} style={{ color: tokens.colorNeutralForeground2 }}>
-              Please select a business partner
+        {/* Header */}
+        <div className={styles.header}>
+          <DialogTitle>
+            <Text size={500} weight="semibold">
+              Select Business Partner
             </Text>
-            <div>
-              <Button appearance="secondary" onClick={onClose}>
-                Cancel
-              </Button>
-            </div>
+          </DialogTitle>
+          <Button
+            appearance="subtle"
+            aria-label="close"
+            icon={<Dismiss24Regular />}
+            onClick={onClose}
+          />
+        </div>
+
+        {/* Content */}
+        <div className={styles.content}>
+          <div className={styles.searchInfo}>
+            <Text size={300}>
+              Found{" "}
+              <Badge appearance="filled" color="brand">
+                {searchResults.length}
+              </Badge>{" "}
+              results for "{searchQuery}"
+            </Text>
           </div>
-        </DialogBody>
+
+          <div className={styles.tableContainer}>
+            <Table
+              aria-label="Business Partner Results"
+              className={styles.table}
+              size="extra-small"
+            >
+              <TableHeader>
+                <TableRow className={styles.tableHeaderRow}>
+                  <TableHeaderCell className={`${styles.tableHeaderCell} ${styles.cardCodeCell}`}>
+                    CardCode
+                  </TableHeaderCell>
+                  <TableHeaderCell
+                    className={`${styles.tableHeaderCell} ${styles.companyNameCell}`}
+                  >
+                    Company Name
+                  </TableHeaderCell>
+                  <TableHeaderCell className={`${styles.tableHeaderCell} ${styles.emailCell}`}>
+                    Email Address
+                  </TableHeaderCell>
+                  <TableHeaderCell className={`${styles.tableHeaderCell} ${styles.locationCell}`}>
+                    Location
+                  </TableHeaderCell>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {searchResults.map((partner, index) => (
+                  <TableRow
+                    key={partner.CardCode}
+                    className={`${styles.tableRow} ${
+                      selectedRowIndex === index ? styles.selectedRow : ""
+                    }`}
+                    onClick={() => handleBpSelect(partner, index)}
+                  >
+                    <TableCell className={styles.cardCodeCell}>
+                      <TableCellLayout>{partner.CardCode}</TableCellLayout>
+                    </TableCell>
+                    <TableCell className={styles.companyNameCell}>
+                      <TableCellLayout title={partner.CardName}>{partner.CardName}</TableCellLayout>
+                    </TableCell>
+                    <TableCell className={styles.emailCell}>
+                      <TableCellLayout
+                        className={
+                          !partner.Email || partner.Email.trim() === "" ? styles.noEmailText : ""
+                        }
+                        title={formatEmail(partner.Email)}
+                      >
+                        {formatEmail(partner.Email)}
+                      </TableCellLayout>
+                    </TableCell>
+                    <TableCell className={styles.locationCell}>
+                      <TableCellLayout title={formatLocation(partner.City, partner.Country)}>
+                        {formatLocation(partner.City, partner.Country)}
+                      </TableCellLayout>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className={styles.footer}>
+          <Text size={200} style={{ color: tokens.colorNeutralForeground2 }}>
+            Please select a business partner
+          </Text>
+          <Button appearance="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+        </div>
       </DialogSurface>
     </Dialog>
   );
 };
 
-// const BpModal: React.FC<BpModalProps> = ({
-//   isOpen,
-//   onClose,
-//   onSelect,
-//   searchResults,
-//   searchQuery,
-// }) => {
-//   const styles = useStyles();
-
-//   const handleBpSelect = (bp: BusinessPartner) => {
-//     console.log("Selected bp: ", bp);
-
-//     onSelect(bp);
-//     onClose();
-//   };
-
-//   const getInitials = (name: string): string => {
-//     return name
-//       .split(" ")
-//       .map((word) => word.charAt(0))
-//       .join("")
-//       .substring(0, 2)
-//       .toUpperCase();
-//   };
-
-//   const hasEmail = (email: string | null): boolean => {
-//     return email !== null && email !== "" && email.trim() !== "";
-//   };
-
-//   return (
-//     <Dialog open={isOpen}>
-//       <DialogSurface className={styles.modal}>
-//         <DialogBody>
-//           <div className={styles.header}>
-//             <DialogTitle>
-//               <Text size={300} weight="semibold">
-//                 Business Partner Search Results
-//               </Text>
-//             </DialogTitle>
-//             <Button
-//               appearance="subtle"
-//               aria-label="close"
-//               icon={<Dismiss24Regular />}
-//               onClick={onClose}
-//             />
-//           </div>
-
-//           <DialogContent>
-//             <div className={styles.searchInfo}>
-//               <Text size={300}>
-//                 Found{" "}
-//                 <Badge appearance="filled" color="brand">
-//                   {searchResults.length}
-//                 </Badge>{" "}
-//                 results for "{searchQuery}"
-//               </Text>
-//             </div>
-
-//             <div className={styles.resultsContainer}>
-//               {searchResults.map((partner, _index) => (
-//                 <Card
-//                   key={partner.CardCode}
-//                   className={styles.resultCard}
-//                   onClick={() => handleBpSelect(partner)}
-//                 >
-//                   <div className={styles.cardContent}>
-//                     <Avatar
-//                       className={styles.avatar}
-//                       name={partner.CardName}
-//                       size={48}
-//                       color="brand"
-//                       initials={getInitials(partner.CardName)}
-//                       icon={<Building24Regular />}
-//                     />
-
-//                     <div className={styles.businessInfo}>
-//                       <div className={styles.businessName} title={partner.CardName}>
-//                         {partner.CardName}
-//                       </div>
-
-//                       <div className={styles.cardCode}>
-//                         <Person24Regular fontSize={16} />
-//                         <Badge appearance="outline" size="small">
-//                           {partner.CardCode}
-//                         </Badge>
-//                       </div>
-
-//                       <div className={styles.email}>
-//                         <Mail24Regular fontSize={16} />
-//                         {hasEmail(partner.Email) ? (
-//                           <Text size={200}>{partner.Email}</Text>
-//                         ) : (
-//                           <Text size={200} className={styles.noEmail}>
-//                             No email available
-//                           </Text>
-//                         )}
-//                       </div>
-//                     </div>
-//                   </div>
-//                 </Card>
-//               ))}
-//             </div>
-//           </DialogContent>
-//         </DialogBody>
-//       </DialogSurface>
-//     </Dialog>
-//   );
-// };
-
 export default BpModal;
 
 const useStyles = makeStyles({
   modal: {
-    width: "800px", // Wider to accommodate table
+    width: "1000px",
     maxHeight: "80vh",
+    display: "flex",
+    flexDirection: "column", // Essential for footer positioning
   },
   header: {
     display: "flex",
@@ -284,6 +187,14 @@ const useStyles = makeStyles({
     justifyContent: "space-between",
     padding: tokens.spacingVerticalM,
     borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
+    flexShrink: 0, // Prevent header from shrinking
+  },
+  content: {
+    flex: 1, // Take up remaining space
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
+    padding: tokens.spacingVerticalM,
   },
   searchInfo: {
     padding: tokens.spacingVerticalS,
@@ -291,15 +202,22 @@ const useStyles = makeStyles({
     borderRadius: tokens.borderRadiusMedium,
     marginBottom: tokens.spacingVerticalM,
     textAlign: "center",
+    flexShrink: 0,
   },
   tableContainer: {
-    maxHeight: "500px",
+    flex: 1,
     overflowY: "auto",
     border: `1px solid ${tokens.colorNeutralStroke2}`,
     borderRadius: tokens.borderRadiusMedium,
   },
+  // FIXED: Force table layout and column widths
+  table: {
+    tableLayout: "fixed", // This is key!
+    width: "100%",
+  },
   tableRow: {
     cursor: "pointer",
+    height: "32px",
     "&:hover": {
       backgroundColor: tokens.colorNeutralBackground1Hover,
     },
@@ -307,23 +225,54 @@ const useStyles = makeStyles({
   selectedRow: {
     backgroundColor: tokens.colorBrandBackground2,
   },
+  // Column widths as percentages (must add up to 100%)
   cardCodeCell: {
+    width: "12%", // Small for card codes
     fontFamily: tokens.fontFamilyMonospace,
     fontSize: tokens.fontSizeBase200,
+    padding: `${tokens.spacingVerticalXS} ${tokens.spacingHorizontalXS}`,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
   companyNameCell: {
+    width: "35%", // Largest for company names
     fontWeight: tokens.fontWeightSemibold,
+    fontSize: tokens.fontSizeBase200,
+    padding: `${tokens.spacingVerticalXS} ${tokens.spacingHorizontalXS}`,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
   emailCell: {
+    width: "33%", // Good space for emails
     fontSize: tokens.fontSizeBase200,
     color: tokens.colorNeutralForeground2,
+    padding: `${tokens.spacingVerticalXS} ${tokens.spacingHorizontalXS}`,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
+  locationCell: {
+    width: "20%", // Remaining space
+    fontSize: tokens.fontSizeBase200,
+    padding: `${tokens.spacingVerticalXS} ${tokens.spacingHorizontalXS}`,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
   noEmailText: {
     fontStyle: "italic",
     color: tokens.colorNeutralForeground3,
   },
-  locationCell: {
+  tableHeaderRow: {
+    backgroundColor: tokens.colorNeutralBackground3,
+    borderBottom: `2px solid ${tokens.colorNeutralStroke2}`,
+  },
+  tableHeaderCell: {
+    fontWeight: tokens.fontWeightSemibold,
     fontSize: tokens.fontSizeBase200,
+    padding: `${tokens.spacingVerticalXS} ${tokens.spacingHorizontalXS}`,
   },
   footer: {
     display: "flex",
@@ -332,92 +281,7 @@ const useStyles = makeStyles({
     padding: tokens.spacingVerticalM,
     borderTop: `1px solid ${tokens.colorNeutralStroke2}`,
     backgroundColor: tokens.colorNeutralBackground2,
+    flexShrink: 0, // Prevent footer from shrinking
+    marginTop: "auto", // Push to bottom
   },
 });
-
-// const useStyles = makeStyles({
-//   modal: {
-//     width: "600px",
-//     maxHeight: "80vh",
-//   },
-//   header: {
-//     display: "flex",
-//     alignItems: "center",
-//     justifyContent: "space-between",
-//     padding: tokens.spacingVerticalM,
-//     borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
-//   },
-//   searchInfo: {
-//     padding: tokens.spacingVerticalS,
-//     backgroundColor: tokens.colorNeutralBackground2,
-//     borderRadius: tokens.borderRadiusMedium,
-//     marginBottom: tokens.spacingVerticalM,
-//     textAlign: "center",
-//   },
-//   resultsContainer: {
-//     maxHeight: "400px",
-//     overflowY: "auto",
-//     padding: tokens.spacingVerticalXS,
-//   },
-//   resultCard: {
-//     marginBottom: tokens.spacingVerticalS,
-//     cursor: "pointer",
-//     transition: "all 0.2s ease",
-//     "&:hover": {
-//       backgroundColor: tokens.colorNeutralBackground1Hover,
-//       //   borderColor: tokens.colorBrandStroke1,
-//       transform: "translateY(-1px)",
-//       boxShadow: tokens.shadow4,
-//     },
-//   },
-//   cardContent: {
-//     display: "flex",
-//     alignItems: "center",
-//     gap: tokens.spacingHorizontalM,
-//     padding: tokens.spacingVerticalM,
-//   },
-//   avatar: {
-//     flexShrink: 0,
-//   },
-//   businessInfo: {
-//     flex: 1,
-//     minWidth: 0, // Allows text truncation
-//   },
-//   businessName: {
-//     fontSize: tokens.fontSizeBase300,
-//     fontWeight: tokens.fontWeightSemibold,
-//     color: tokens.colorNeutralForeground1,
-//     marginBottom: tokens.spacingVerticalXXS,
-//     overflow: "hidden",
-//     textOverflow: "ellipsis",
-//     whiteSpace: "nowrap",
-//   },
-//   cardCode: {
-//     display: "inline-flex",
-//     alignItems: "center",
-//     gap: tokens.spacingHorizontalXS,
-//     marginBottom: tokens.spacingVerticalXXS,
-//   },
-//   email: {
-//     display: "flex",
-//     alignItems: "center",
-//     gap: tokens.spacingHorizontalXS,
-//     fontSize: tokens.fontSizeBase200,
-//     color: tokens.colorNeutralForeground2,
-//   },
-//   noEmail: {
-//     color: tokens.colorNeutralForeground3,
-//     fontStyle: "italic",
-//   },
-//   footer: {
-//     display: "flex",
-//     justifyContent: "space-between",
-//     alignItems: "center",
-//     padding: tokens.spacingVerticalM,
-//     borderTop: `1px solid ${tokens.colorNeutralStroke2}`,
-//     backgroundColor: tokens.colorNeutralBackground2,
-//   },
-//   closeButton: {
-//     marginLeft: "auto",
-//   },
-// });
