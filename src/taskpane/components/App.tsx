@@ -18,9 +18,10 @@ import {
   tokens,
   TabValue,
 } from "@fluentui/react-components";
-import BpModal, { BusinessPartner } from "./BpModal";
+// import BpModal, { BusinessPartner } from "./BpModal";
+import BpModal from "./BpModal";
 import Tabs from "./Tabs";
-import { searchBusinessPartners } from "../../api/searchBusinessPartners";
+import { BusinessPartner, searchBusinessPartners } from "../../api/searchBusinessPartners";
 
 export interface AppProps {
   title: string;
@@ -96,8 +97,8 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     const selectedBPData = {
       cardCode: bp.CardCode,
       name: bp.CardName,
-      city: "", //todo
-      country: "", //todo
+      city: bp.City, //todo
+      country: bp.Country, //todo
       involvements: [], //todo
       projectCode: "", //todo
     };

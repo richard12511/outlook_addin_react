@@ -13,8 +13,8 @@ export interface SearchBPsResponse {
 }
 
 const API_BASE_URL = "http://localhost:1025";
-const USERNAME = "un";
-const PASSWORD = "pw";
+const USERNAME = "SAP-Online-Tasker";
+const PASSWORD = "33-wretch-z*yWv-%z&AhkS";
 
 export const searchBusinessPartners = async (
   cardCode?: string,

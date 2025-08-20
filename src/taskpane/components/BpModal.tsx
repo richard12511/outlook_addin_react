@@ -22,12 +22,13 @@ import {
   Mail24Regular,
   Building24Regular,
 } from "@fluentui/react-icons";
+import { BusinessPartner } from "../../api/searchBusinessPartners";
 
-export interface BusinessPartner {
-  CardCode: string;
-  CardName: string;
-  Email: string | null;
-}
+// export interface BusinessPartner {
+//   CardCode: string;
+//   CardName: string;
+//   Email: string | null;
+// }
 
 export interface BpModalProps {
   isOpen: boolean;
