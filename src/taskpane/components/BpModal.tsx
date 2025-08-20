@@ -67,10 +67,44 @@ const BpModal: React.FC<BpModalProps> = ({
     return email && email.trim() !== "" ? email : "-";
   };
 
+  const columnStyles = {
+    cardCode: {
+      width: "80px",
+      minWidth: "80px",
+      maxWidth: "80px",
+      overflow: "hidden" as const,
+      textOverflow: "ellipsis" as const,
+      whiteSpace: "nowrap" as const,
+    },
+    companyName: {
+      width: "150px",
+      minWidth: "100px",
+      maxWidth: "200px",
+      overflow: "hidden" as const,
+      textOverflow: "ellipsis" as const,
+      whiteSpace: "nowrap" as const,
+    },
+    email: {
+      width: "180",
+      minWidth: "100px",
+      maxWidth: "250px",
+      overflow: "hidden" as const,
+      textOverflow: "ellipsis" as const,
+      whiteSpace: "nowrap" as const,
+    },
+    location: {
+      width: "140px",
+      minWidth: "100px",
+      maxWidth: "180px",
+      overflow: "hidden" as const,
+      textOverflow: "ellipsis" as const,
+      whiteSpace: "nowrap" as const,
+    },
+  };
+
   return (
     <Dialog open={isOpen}>
-      <DialogSurface className={styles.modal}>
-        {/* Header */}
+      <DialogSurface className={styles.modal} style={{ width: "100%" }}>
         <div className={styles.header}>
           <DialogTitle>
             <Text size={500} weight="semibold">
@@ -85,7 +119,6 @@ const BpModal: React.FC<BpModalProps> = ({
           />
         </div>
 
-        {/* Content */}
         <div className={styles.content}>
           <div className={styles.searchInfo}>
             <Text size={300}>
@@ -100,23 +133,24 @@ const BpModal: React.FC<BpModalProps> = ({
           <div className={styles.tableContainer}>
             <Table
               aria-label="Business Partner Results"
-              className={styles.table}
               size="extra-small"
+              style={{ tableLayout: "fixed", width: "100%" }}
             >
               <TableHeader>
                 <TableRow className={styles.tableHeaderRow}>
-                  <TableHeaderCell className={`${styles.tableHeaderCell} ${styles.cardCodeCell}`}>
+                  <TableHeaderCell className={styles.tableHeaderCell} style={columnStyles.cardCode}>
                     CardCode
                   </TableHeaderCell>
                   <TableHeaderCell
-                    className={`${styles.tableHeaderCell} ${styles.companyNameCell}`}
+                    className={styles.tableHeaderCell}
+                    style={columnStyles.companyName}
                   >
                     Company Name
                   </TableHeaderCell>
-                  <TableHeaderCell className={`${styles.tableHeaderCell} ${styles.emailCell}`}>
+                  <TableHeaderCell className={styles.tableHeaderCell} style={columnStyles.email}>
                     Email Address
                   </TableHeaderCell>
-                  <TableHeaderCell className={`${styles.tableHeaderCell} ${styles.locationCell}`}>
+                  <TableHeaderCell className={styles.tableHeaderCell} style={columnStyles.location}>
                     Location
                   </TableHeaderCell>
                 </TableRow>
@@ -130,13 +164,15 @@ const BpModal: React.FC<BpModalProps> = ({
                     }`}
                     onClick={() => handleBpSelect(partner, index)}
                   >
-                    <TableCell className={styles.cardCodeCell}>
+                    <TableCell className={styles.cardCodeCell} style={columnStyles.cardCode}>
                       <TableCellLayout>{partner.CardCode}</TableCellLayout>
                     </TableCell>
-                    <TableCell className={styles.companyNameCell}>
+
+                    <TableCell className={styles.companyNameCell} style={columnStyles.companyName}>
                       <TableCellLayout title={partner.CardName}>{partner.CardName}</TableCellLayout>
                     </TableCell>
-                    <TableCell className={styles.emailCell}>
+
+                    <TableCell className={styles.emailCell} style={columnStyles.email}>
                       <TableCellLayout
                         className={
                           !partner.Email || partner.Email.trim() === "" ? styles.noEmailText : ""
@@ -146,7 +182,8 @@ const BpModal: React.FC<BpModalProps> = ({
                         {formatEmail(partner.Email)}
                       </TableCellLayout>
                     </TableCell>
-                    <TableCell className={styles.locationCell}>
+
+                    <TableCell className={styles.locationCell} style={columnStyles.location}>
                       <TableCellLayout title={formatLocation(partner.City, partner.Country)}>
                         {formatLocation(partner.City, partner.Country)}
                       </TableCellLayout>
@@ -158,7 +195,6 @@ const BpModal: React.FC<BpModalProps> = ({
           </div>
         </div>
 
-        {/* Footer */}
         <div className={styles.footer}>
           <Text size={200} style={{ color: tokens.colorNeutralForeground2 }}>
             Please select a business partner
@@ -176,10 +212,10 @@ export default BpModal;
 
 const useStyles = makeStyles({
   modal: {
-    width: "1000px",
+    width: "2000px",
     maxHeight: "80vh",
     display: "flex",
-    flexDirection: "column", // Essential for footer positioning
+    flexDirection: "column",
   },
   header: {
     display: "flex",
@@ -187,10 +223,10 @@ const useStyles = makeStyles({
     justifyContent: "space-between",
     padding: tokens.spacingVerticalM,
     borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
-    flexShrink: 0, // Prevent header from shrinking
+    flexShrink: 0,
   },
   content: {
-    flex: 1, // Take up remaining space
+    flex: 1,
     display: "flex",
     flexDirection: "column",
     overflow: "hidden",
@@ -210,11 +246,6 @@ const useStyles = makeStyles({
     border: `1px solid ${tokens.colorNeutralStroke2}`,
     borderRadius: tokens.borderRadiusMedium,
   },
-  // FIXED: Force table layout and column widths
-  table: {
-    tableLayout: "fixed", // This is key!
-    width: "100%",
-  },
   tableRow: {
     cursor: "pointer",
     height: "32px",
@@ -225,41 +256,25 @@ const useStyles = makeStyles({
   selectedRow: {
     backgroundColor: tokens.colorBrandBackground2,
   },
-  // Column widths as percentages (must add up to 100%)
+  // Keep the basic styling, widths are handled by inline styles
   cardCodeCell: {
-    width: "12%", // Small for card codes
     fontFamily: tokens.fontFamilyMonospace,
     fontSize: tokens.fontSizeBase200,
     padding: `${tokens.spacingVerticalXS} ${tokens.spacingHorizontalXS}`,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
   },
   companyNameCell: {
-    width: "35%", // Largest for company names
     fontWeight: tokens.fontWeightSemibold,
     fontSize: tokens.fontSizeBase200,
     padding: `${tokens.spacingVerticalXS} ${tokens.spacingHorizontalXS}`,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
   },
   emailCell: {
-    width: "33%", // Good space for emails
     fontSize: tokens.fontSizeBase200,
     color: tokens.colorNeutralForeground2,
     padding: `${tokens.spacingVerticalXS} ${tokens.spacingHorizontalXS}`,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
   },
   locationCell: {
-    width: "20%", // Remaining space
     fontSize: tokens.fontSizeBase200,
     padding: `${tokens.spacingVerticalXS} ${tokens.spacingHorizontalXS}`,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
   },
   noEmailText: {
     fontStyle: "italic",
@@ -281,7 +296,7 @@ const useStyles = makeStyles({
     padding: tokens.spacingVerticalM,
     borderTop: `1px solid ${tokens.colorNeutralStroke2}`,
     backgroundColor: tokens.colorNeutralBackground2,
-    flexShrink: 0, // Prevent footer from shrinking
-    marginTop: "auto", // Push to bottom
+    flexShrink: 0,
+    marginTop: "auto",
   },
 });
