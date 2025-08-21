@@ -23,6 +23,7 @@ import BpModal from "./BpModal";
 import Tabs from "./Tabs";
 import { BusinessPartner, searchBusinessPartners } from "../../api/searchBusinessPartners";
 import { getInvolvements } from "../../api/getInvolvements";
+import { FollowUpData } from "./FollowUpCard";
 
 export interface AppProps {
   title: string;
@@ -48,6 +49,9 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<BusinessPartner[]>([]);
   const [lastSearchQuery, setLastSearchQuery] = useState<string>("");
+
+  //Follow-Up Tab data
+  const [followUpData, setFollowUpData] = useState<FollowUpData>({ createFollowUp: false });
 
   //Selected BP state
   const [selectedBP, setSelectedBP] = useState<{
@@ -126,8 +130,10 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     setActiveTab(tabValue);
   };
 
-  const handleFollowUpChanged = () => {
-    console.log("follow up changed");
+  const handleFollowUpChanged = (data: FollowUpData) => {
+    console.log("follow up data changed");
+    console.log("FollowUpData: ", data);
+    setFollowUpData(data);
   };
 
   const handleCloseModal = () => {
@@ -256,7 +262,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           selectedBP={selectedBP}
           activeTab={activeTab}
           onTabChange={handleTabChange}
-          followUpData={{ createFollowUp: false, reminder: false }}
+          followUpData={followUpData}
           onFollowUpChange={handleFollowUpChanged}
         />
         {/* <FindBpCard onFind={handleFind} onBrowse={handleBrowse} />
