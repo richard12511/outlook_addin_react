@@ -1,18 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import {
-  makeStyles,
-  Button,
-  Input,
-  Label,
-  Card,
-  CardHeader,
-  CardPreview,
-  Text,
-  Dropdown,
-  Option,
-  tokens,
-} from "@fluentui/react-components";
+import { makeStyles, Button, Input, Label, Card, Text, tokens } from "@fluentui/react-components";
 
 export interface FindBpCardProps {
   onFind: (cardCode: string, name: string, email: string) => void;

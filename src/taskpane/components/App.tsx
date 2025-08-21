@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import Header from "./Header";
 import Progress from "./Progress";
 import {
   makeStyles,
@@ -10,7 +9,6 @@ import {
   Spinner,
   Card,
   CardHeader,
-  CardPreview,
   Text,
   Dropdown,
   MessageBar,

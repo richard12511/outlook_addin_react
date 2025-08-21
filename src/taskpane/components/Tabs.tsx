@@ -1,6 +1,4 @@
 import * as React from "react";
-import { useState } from "react";
-import { useEffect } from "react";
 import { makeStyles, Tab, TabList, TabValue, tokens } from "@fluentui/react-components";
 import FindBpCard from "./FindBpCard";
 import SelectedBpCard from "./SelectedBpCard";
