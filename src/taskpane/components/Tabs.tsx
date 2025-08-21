@@ -45,6 +45,8 @@ const Tabs: React.FC<TabsProps> = ({
         <Tab value="selected" disabled={!selectedBP}>
           Selected BP
         </Tab>
+        <Tab value="Follow-Up">Follow-Up</Tab>
+        <Tab value="Attachments">Attachments</Tab>
       </TabList>
 
       <div className={styles.tabContent}>

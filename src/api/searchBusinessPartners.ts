@@ -1,3 +1,5 @@
+import { API_BASE_URL, USERNAME, PASSWORD } from "./apiConstants";
+
 export interface BusinessPartner {
   CardCode: string;
   CardName: string;
@@ -11,14 +13,6 @@ export interface BusinessPartner {
 export interface SearchBPsResponse {
   bps: BusinessPartner[];
 }
-
-export interface GetInvolvementsResponse {
-  involvements: string[];
-}
-
-const API_BASE_URL = "http://localhost:1025";
-const USERNAME = "SAP-Online-Tasker";
-const PASSWORD = "33-wretch-z*yWv-%z&AhkS";
 
 export const searchBusinessPartners = async (
   cardCode?: string,
@@ -55,30 +49,4 @@ export const searchBusinessPartners = async (
   console.log("Business partners found:", data);
 
   return data.bps || [];
-};
-
-export const getInvolvements = async (cardCode: string): Promise<string[]> => {
-  const credentials = btoa(`${USERNAME}:${PASSWORD}`);
-  const params = new URLSearchParams();
-  if (cardCode) params.append("cardCode", cardCode);
-
-  const url = `${API_BASE_URL}/OutlookAddin/GetInvolvements?${params.toString()}`;
-  console.log("Making request to: ", url);
-
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      Authorization: `Basic ${credentials}`,
-      "Content-Type": "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  }
-
-  const data: GetInvolvementsResponse = await response.json();
-  console.log("Involvements found: ", data);
-
-  return data.involvements || [];
 };
