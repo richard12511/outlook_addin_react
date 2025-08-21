@@ -272,9 +272,6 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           followUpData={followUpData}
           onFollowUpChange={handleFollowUpChanged}
         />
-        {/* <FindBpCard onFind={handleFind} onBrowse={handleBrowse} />
-
-        <FindProjectCard onFind={handleProjectFind} /> */}
 
         <div className={styles.buttonGroup}>
           <Button appearance="primary" onClick={handleSave} disabled={isLoading}>
