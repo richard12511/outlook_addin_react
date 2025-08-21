@@ -11,6 +11,7 @@ import {
   Input,
   tokens,
 } from "@fluentui/react-components";
+import { getCurrentDate, getCurrentTime } from "../../util/dateUtils";
 
 const activityOptions = [
   { key: "conversation", text: "Conversation" },
@@ -55,18 +56,6 @@ const FollowUpCard: React.FC<FollowUpCardProps> = ({ data, onChange }) => {
 
   const handleReminderUnitChange = (_event: any, optionData: any) => {
     handleChange("reminderUnit", optionData.optionValue || "");
-  };
-
-  //Get the current date in YYYY-MM-DD format for data input
-  const getCurrentDate = () => {
-    const today = new Date();
-    return today.toISOString().split("T")[0];
-  };
-
-  //Get current time in HH:MM format
-  const getCurrentTime = () => {
-    const now = new Date();
-    return now.toTimeString().slice(0, 5);
   };
 
   return (
