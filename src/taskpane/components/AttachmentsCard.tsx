@@ -50,6 +50,8 @@ const AttachmentsCard: React.FC<AttachmentsCardProps> = ({ data, onChange }) => 
   );
 };
 
+export default AttachmentsCard;
+
 const useStyles = makeStyles({
   card: {
     padding: tokens.spacingVerticalM,

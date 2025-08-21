@@ -4,6 +4,7 @@ import FindBpCard from "./FindBpCard";
 import SelectedBpCard from "./SelectedBpCard";
 import FindProjectCard from "./FindProjectCard";
 import FollowUpCard, { FollowUpData } from "./FollowUpCard";
+import AttachmentsCard, { AttachmentsData } from "./AttachmentsCard";
 
 export interface TabsProps {
   onFindClick: (cardCode: string, name: string, email: string) => void;
@@ -21,6 +22,8 @@ export interface TabsProps {
   onTabChange?: (tabValue: TabValue) => void;
   followUpData: FollowUpData;
   onFollowUpChange: (data: FollowUpData) => void;
+  attachmentsData: AttachmentsData;
+  onAttachmentsChange: (data: AttachmentsData) => void;
 }
 
 const Tabs: React.FC<TabsProps> = ({
@@ -32,6 +35,8 @@ const Tabs: React.FC<TabsProps> = ({
   onTabChange,
   followUpData,
   onFollowUpChange,
+  attachmentsData,
+  onAttachmentsChange,
 }) => {
   const styles = useStyles();
 
@@ -73,6 +78,10 @@ const Tabs: React.FC<TabsProps> = ({
 
         {activeTab === "followup" && (
           <FollowUpCard data={followUpData} onChange={onFollowUpChange} />
+        )}
+
+        {activeTab === "attachments" && (
+          <AttachmentsCard data={attachmentsData} onChange={onAttachmentsChange} />
         )}
       </div>
     </div>

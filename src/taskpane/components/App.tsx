@@ -22,6 +22,7 @@ import Tabs from "./Tabs";
 import { BusinessPartner, searchBusinessPartners } from "../../api/searchBusinessPartners";
 import { getInvolvements } from "../../api/getInvolvements";
 import { FollowUpData } from "./FollowUpCard";
+import { AttachmentsData } from "./AttachmentsCard";
 import { getCurrentDate, getCurrentTime } from "../../util/dateUtils";
 
 export interface AppProps {
@@ -58,6 +59,12 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     reminder: false,
     reminderUnit: "minutes",
     reminderValue: "15",
+  });
+
+  //Attachments Data
+  const [attachmentsData, setAttachmentsData] = useState<AttachmentsData>({
+    saveEmailMessage: true,
+    saveEmailAttachments: true,
   });
 
   //Selected BP state
@@ -138,9 +145,13 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   };
 
   const handleFollowUpChanged = (data: FollowUpData) => {
-    console.log("follow up data changed");
     console.log("FollowUpData: ", data);
     setFollowUpData(data);
+  };
+
+  const handleAttachmentsDataChanged = (data: AttachmentsData) => {
+    console.log("Attachments Data changed: ", data);
+    setAttachmentsData(data);
   };
 
   const handleCloseModal = () => {
@@ -271,6 +282,8 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           onTabChange={handleTabChange}
           followUpData={followUpData}
           onFollowUpChange={handleFollowUpChanged}
+          attachmentsData={attachmentsData}
+          onAttachmentsChange={handleAttachmentsDataChanged}
         />
 
         <div className={styles.buttonGroup}>
