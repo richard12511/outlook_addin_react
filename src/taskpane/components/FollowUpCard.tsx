@@ -86,7 +86,7 @@ const FollowUpCard: React.FC<FollowUpCardProps> = ({ data, onChange }) => {
           >
             {activityOptions.map((option) => (
               <Option key={option.key} value={option.key}>
-                option.text
+                {option.text}
               </Option>
             ))}
           </Dropdown>

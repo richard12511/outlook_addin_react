@@ -22,6 +22,7 @@ import Tabs from "./Tabs";
 import { BusinessPartner, searchBusinessPartners } from "../../api/searchBusinessPartners";
 import { getInvolvements } from "../../api/getInvolvements";
 import { FollowUpData } from "./FollowUpCard";
+import { getCurrentDate, getCurrentTime } from "../../util/dateUtils";
 
 export interface AppProps {
   title: string;
@@ -49,7 +50,15 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   const [lastSearchQuery, setLastSearchQuery] = useState<string>("");
 
   //Follow-Up Tab data
-  const [followUpData, setFollowUpData] = useState<FollowUpData>({ createFollowUp: false });
+  const [followUpData, setFollowUpData] = useState<FollowUpData>({
+    createFollowUp: false,
+    dueDate: getCurrentDate(),
+    dueTime: getCurrentTime(),
+    activity: "other",
+    reminder: false,
+    reminderUnit: "minutes",
+    reminderValue: "15",
+  });
 
   //Selected BP state
   const [selectedBP, setSelectedBP] = useState<{
