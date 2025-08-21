@@ -5,6 +5,7 @@ import { makeStyles, Tab, TabList, TabValue, tokens } from "@fluentui/react-comp
 import FindBpCard from "./FindBpCard";
 import SelectedBpCard from "./SelectedBpCard";
 import FindProjectCard from "./FindProjectCard";
+import FollowUpCard, { FollowUpData } from "./FollowUpCard";
 
 export interface TabsProps {
   onFindClick: (cardCode: string, name: string, email: string) => void;
@@ -20,6 +21,8 @@ export interface TabsProps {
   } | null;
   activeTab?: TabValue;
   onTabChange?: (tabValue: TabValue) => void;
+  followUpData: FollowUpData;
+  onFollowUpChange: (data: FollowUpData) => void;
 }
 
 const Tabs: React.FC<TabsProps> = ({
@@ -29,6 +32,8 @@ const Tabs: React.FC<TabsProps> = ({
   selectedBP,
   activeTab,
   onTabChange,
+  followUpData,
+  onFollowUpChange,
 }) => {
   const styles = useStyles();
 
@@ -45,8 +50,8 @@ const Tabs: React.FC<TabsProps> = ({
         <Tab value="selected" disabled={!selectedBP}>
           Selected BP
         </Tab>
-        <Tab value="Follow-Up">Follow-Up</Tab>
-        <Tab value="Attachments">Attachments</Tab>
+        <Tab value="followup">Follow-Up</Tab>
+        <Tab value="attachments">Attachments</Tab>
       </TabList>
 
       <div className={styles.tabContent}>
@@ -66,6 +71,10 @@ const Tabs: React.FC<TabsProps> = ({
             involvements={selectedBP.involvements}
             projectCode={selectedBP.projectCode}
           />
+        )}
+
+        {activeTab === "followup" && (
+          <FollowUpCard data={followUpData} onChange={onFollowUpChange} />
         )}
       </div>
     </div>

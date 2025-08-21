@@ -57,7 +57,7 @@ const SelectedBpCard: React.FC<SelectedBpCardProps> = ({
           <Label htmlFor="involvements-input" size="small">
             Involvements:
           </Label>
-          <Input id="involvements-input" value={involvements.toString()} size="small" />
+          <Input id="involvements-input" value={involvements.join(", ")} size="small" />
         </div>
         <div className={styles.inputGroup}>
           <Label htmlFor="project-code-input" size="small">

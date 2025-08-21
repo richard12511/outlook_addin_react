@@ -126,6 +126,10 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     setActiveTab(tabValue);
   };
 
+  const handleFollowUpChanged = () => {
+    console.log("follow up changed");
+  };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setSearchResults([]);
@@ -252,6 +256,8 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           selectedBP={selectedBP}
           activeTab={activeTab}
           onTabChange={handleTabChange}
+          followUpData={{ createFollowUp: false, reminder: false }}
+          onFollowUpChange={handleFollowUpChanged}
         />
         {/* <FindBpCard onFind={handleFind} onBrowse={handleBrowse} />
 
