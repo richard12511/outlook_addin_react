@@ -22,6 +22,7 @@ import {
 import BpModal from "./BpModal";
 import Tabs from "./Tabs";
 import { BusinessPartner, searchBusinessPartners } from "../../api/searchBusinessPartners";
+import { getInvolvements } from "../../api/getInvolvements";
 
 export interface AppProps {
   title: string;
@@ -92,16 +93,23 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     }
   };
 
-  const handleBpSelect = (bp: BusinessPartner) => {
+  const handleBpSelect = async (bp: BusinessPartner) => {
     console.log("BP selected in App:", bp);
     const selectedBPData = {
       cardCode: bp.CardCode,
       name: bp.CardName,
-      city: bp.City, //todo
-      country: bp.Country, //todo
-      involvements: [], //todo
-      projectCode: "", //todo
+      city: bp.City,
+      country: bp.Country,
+      involvements: [],
+      projectCode: "",
     };
+
+    console.log("before getInvolvements");
+    console.log("selectedBPData.cardCode: ", selectedBPData.cardCode);
+    const results = await getInvolvements(selectedBPData.cardCode);
+    console.log("results of getInvolvements: ", results);
+    selectedBPData.involvements = results;
+    console.log("after getInvolvements");
     //Fill the SelectedBpCard data with results and switch tabs
     setSelectedBP(selectedBPData);
 

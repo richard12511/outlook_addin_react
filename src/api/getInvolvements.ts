@@ -5,6 +5,7 @@ export interface GetInvolvementsResponse {
 }
 
 export const getInvolvements = async (cardCode: string): Promise<string[]> => {
+  console.log("in getInvolvements");
   const credentials = btoa(`${USERNAME}:${PASSWORD}`);
   const params = new URLSearchParams();
   if (cardCode) params.append("cardCode", cardCode);
