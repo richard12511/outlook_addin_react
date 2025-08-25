@@ -11,6 +11,7 @@ import {
   tokens,
 } from "@fluentui/react-components";
 import { getCurrentDate, getCurrentTime } from "../../util/dateUtils";
+import { FollowUpData } from "../../types";
 
 const activityOptions = [
   { key: "conversation", text: "Conversation" },
@@ -25,16 +26,6 @@ const reminderOptions = [
   { key: "hours", text: "Hours" },
   { key: "days", text: "Days" },
 ];
-
-export interface FollowUpData {
-  createFollowUp: boolean;
-  activity?: string;
-  dueDate?: string;
-  dueTime?: string;
-  reminder?: boolean;
-  reminderValue?: string;
-  reminderUnit?: string;
-}
 
 export interface FollowUpCardProps {
   data: FollowUpData;

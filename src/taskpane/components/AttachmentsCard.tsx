@@ -1,10 +1,6 @@
 import * as React from "react";
 import { makeStyles, Card, Text, Checkbox, tokens } from "@fluentui/react-components";
-
-export interface AttachmentsData {
-  saveEmailMessage: boolean;
-  saveEmailAttachments: boolean;
-}
+import { AttachmentsData } from "../../types";
 
 export interface AttachmentsCardProps {
   data: AttachmentsData;
