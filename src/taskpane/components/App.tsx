@@ -23,7 +23,7 @@ import { BusinessPartner, searchBusinessPartners } from "../../api/searchBusines
 import { getInvolvements } from "../../api/getInvolvements";
 import { FollowUpData } from "./FollowUpCard";
 import { AttachmentsData } from "./AttachmentsCard";
-import { getCurrentDate, getCurrentTime } from "../../util/dateUtils";
+import { getCurrentDate, getCurrentTime, getDefaultDate } from "../../util/dateUtils";
 
 export interface AppProps {
   title: string;
@@ -53,7 +53,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   //Follow-Up Tab data
   const [followUpData, setFollowUpData] = useState<FollowUpData>({
     createFollowUp: false,
-    dueDate: getCurrentDate(),
+    dueDate: getDefaultDate(),
     dueTime: getCurrentTime(),
     activity: "other",
     reminder: false,
@@ -144,7 +144,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     setActiveTab(tabValue);
   };
 
-  const handleFollowUpChanged = (data: FollowUpData) => {
+  const handleFollowUpDataChanged = (data: FollowUpData) => {
     console.log("FollowUpData: ", data);
     setFollowUpData(data);
   };
@@ -281,7 +281,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           activeTab={activeTab}
           onTabChange={handleTabChange}
           followUpData={followUpData}
-          onFollowUpChange={handleFollowUpChanged}
+          onFollowUpChange={handleFollowUpDataChanged}
           attachmentsData={attachmentsData}
           onAttachmentsChange={handleAttachmentsDataChanged}
         />

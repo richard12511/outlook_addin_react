@@ -39,7 +39,7 @@ const AttachmentsCard: React.FC<AttachmentsCardProps> = ({ data, onChange }) => 
         <div className={styles.checkboxRow}>
           <Checkbox
             checked={data.saveEmailAttachments}
-            onChange={(e, checkboxData) =>
+            onChange={(_e, checkboxData) =>
               handleChange("saveEmailAttachments", checkboxData.checked || false)
             }
             label="Save E-mail Attachments"
