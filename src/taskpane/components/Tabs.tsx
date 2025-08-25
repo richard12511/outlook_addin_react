@@ -3,8 +3,9 @@ import { makeStyles, Tab, TabList, TabValue, tokens } from "@fluentui/react-comp
 import FindBpCard from "./FindBpCard";
 import SelectedBpCard from "./SelectedBpCard";
 import FindProjectCard from "./FindProjectCard";
-import FollowUpCard, { FollowUpData } from "./FollowUpCard";
-import AttachmentsCard, { AttachmentsData } from "./AttachmentsCard";
+import FollowUpCard from "./FollowUpCard";
+import AttachmentsCard from "./AttachmentsCard";
+import { AttachmentsData, FollowUpData } from "../../types";
 
 export interface TabsProps {
   onFindClick: (cardCode: string, name: string, email: string) => void;

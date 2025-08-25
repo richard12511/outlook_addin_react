@@ -47,7 +47,7 @@ export const calculateReminderDate = (
 // Build OutlookActivity object from form data
 export const buildOutlookActivity = (
   subject: string,
-  selectedCategory: string,
+  _selectedCategory: string, //TODO
   selectedBP: { cardCode: string; projectCode: string } | null,
   followUpData: FollowUpData,
   attachmentsData: AttachmentsData,

@@ -23,13 +23,8 @@ import {
   TableRow,
   Table,
 } from "@fluentui/react-components";
-import {
-  Dismiss24Regular,
-  Person24Regular,
-  Mail24Regular,
-  Building24Regular,
-} from "@fluentui/react-icons";
-import { BusinessPartner } from "../../api/searchBusinessPartners";
+import { Dismiss24Regular } from "@fluentui/react-icons";
+import { BusinessPartner } from "../../types";
 
 export interface BpModalProps {
   isOpen: boolean;
