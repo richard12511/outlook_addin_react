@@ -1,14 +1,5 @@
+import { BusinessPartner } from "../types";
 import { API_BASE_URL, USERNAME, PASSWORD } from "./apiConstants";
-
-export interface BusinessPartner {
-  CardCode: string;
-  CardName: string;
-  Email: string | null;
-  City?: string;
-  Country?: string;
-  Involvements?: string[];
-  ProjectCode?: string;
-}
 
 export interface SearchBPsResponse {
   bps: BusinessPartner[];

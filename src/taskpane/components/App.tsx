@@ -16,14 +16,14 @@ import {
   tokens,
   TabValue,
 } from "@fluentui/react-components";
-// import BpModal, { BusinessPartner } from "./BpModal";
 import BpModal from "./BpModal";
 import Tabs from "./Tabs";
-import { BusinessPartner, searchBusinessPartners } from "../../api/searchBusinessPartners";
+import { searchBusinessPartners } from "../../api/searchBusinessPartners";
 import { getInvolvements } from "../../api/getInvolvements";
-import { FollowUpData } from "./FollowUpCard";
-import { AttachmentsData } from "./AttachmentsCard";
 import { getCurrentDate, getCurrentTime, getDefaultDate } from "../../util/dateUtils";
+import { buildOutlookActivity } from "../../util/activityUtils";
+import { createActivity } from "../../api/createActivity";
+import { AttachmentsData, BusinessPartner, FollowUpData } from "../../types";
 
 export interface AppProps {
   title: string;
@@ -80,9 +80,83 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   //Tab state
   const [activeTab, setActiveTab] = useState<TabValue>("search");
 
-  const handleSave = () => {
-    console.log("Save clicked with subject:", subject);
-    alert("Save clicked");
+  const handleSave = async () => {
+    if (!selectedBP) {
+      setMessage("Please select a business partner before saving");
+      setMessageType("error");
+      setTimeout(() => setMessage(""), 5000);
+      return;
+    }
+
+    if (!subject.trim()) {
+      setMessage("Please enter a subject before saving.");
+      setMessageType("error");
+      setTimeout(() => setMessage(""), 5000);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      setMessage("Saving email activity...");
+      setMessageType("info");
+
+      let emailBody = "Email content goes here";
+
+      //Extract the email body from message
+      try {
+        const item = Office.context.mailbox.item;
+        if (item && item.body) {
+          if (item.body.getAsync) {
+            //This is async, so just testing weith placeholder for now
+            emailBody = `Email from Outlook Addin\nSubject: ${subject}`;
+          }
+        }
+      } catch (error) {
+        console.log("Could not extract email body: ", error);
+      }
+
+      //Build the activity data object
+      const activityData = buildOutlookActivity(
+        subject,
+        selectedCategory,
+        selectedBP,
+        followUpData,
+        attachmentsData,
+        emailBody
+      );
+      console.log("Activity data to POST: ", activityData);
+
+      //Send POST request to API
+      const result = await createActivity(activityData);
+      console.log("Save result: ", result);
+
+      if (result.didSave) {
+        let successMessage = "Email activity saved successfully!";
+
+        if (followUpData.createFollowUp && result.didFollowUpSave) {
+          successMessage += " Follow-up activity also created.";
+        } else if (followUpData.createFollowUp && !result.didFollowUpSave) {
+          successMessage += " However, follow-up activity failed to save.";
+        }
+
+        setMessage(successMessage);
+        setMessageType("success");
+
+        // Optionally reset form or close add-in
+        // resetForm();
+      } else {
+        setMessage("Failed to save email activity. Please try again.");
+        setMessageType("error");
+      }
+    } catch (error) {
+      console.log("Save error: ", error);
+      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+      setMessage(`Save Failed: ${errorMessage}`);
+      setMessageType("error");
+    } finally {
+      setIsLoading(false);
+      setTimeout(() => setMessage(""), 10000); // Clear message after 10 seconds
+    }
   };
 
   const handleCancel = () => {
