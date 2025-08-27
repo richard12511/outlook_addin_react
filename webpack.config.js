@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-
+require('dotenv').config();
 const devCerts = require("office-addin-dev-certs");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -65,6 +65,11 @@ module.exports = async (env, options) => {
       ],
     },
     plugins: [
+      new webpack.DefinePlugin({
+      'process.env.API_USERNAME': JSON.stringify(process.env.API_USERNAME),
+      'process.env.API_PASSWORD': JSON.stringify(process.env.API_PASSWORD),
+      'process.env.API_BASE_URL': JSON.stringify(process.env.API_BASE_URL),
+      }),
       new HtmlWebpackPlugin({
         filename: "taskpane.html",
         template: "./src/taskpane/taskpane.html",
