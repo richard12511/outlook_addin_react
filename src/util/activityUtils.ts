@@ -51,7 +51,8 @@ export const buildOutlookActivity = (
   selectedBP: { cardCode: string; projectCode: string } | null,
   followUpData: FollowUpData,
   attachmentsData: AttachmentsData,
-  emailBody?: string
+  emailBody?: string,
+  attachmentPaths?: string
 ): OutlookActivity => {
   if (!selectedBP) {
     throw new Error("No business partner selected");
@@ -79,6 +80,7 @@ export const buildOutlookActivity = (
     ShouldCreateReminder: followUpData.createFollowUp && followUpData.reminder,
     ShouldSaveMessage: attachmentsData.saveEmailMessage,
     ShouldSaveAttachments: attachmentsData.saveEmailAttachments,
+    AttachmentPaths: attachmentPaths,
     ActivityTypeId: ACTIVITY_TYPE_MAP[followUpData.activity] || ACTIVITY_TYPE_MAP["other"],
     ActivityTypeName: followUpData.activity,
     FollowUpStartDate: followUpData.dueDate,

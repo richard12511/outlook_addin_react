@@ -24,6 +24,7 @@ import { getCurrentDate, getCurrentTime, getDefaultDate } from "../../util/dateU
 import { buildOutlookActivity } from "../../util/activityUtils";
 import { createActivity } from "../../api/createActivity";
 import { AttachmentsData, BusinessPartner, FollowUpData } from "../../types";
+import { processAttachments } from "../../util/attachmentProcessor";
 
 export interface AppProps {
   title: string;
@@ -97,8 +98,26 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
 
     try {
       setIsLoading(true);
-      setMessage("Saving email activity...");
+      setMessage("Processing Attachments and saving email activity...");
       setMessageType("info");
+
+      //Process attachments first
+      let attachmentPaths = "";
+      if (attachmentsData.saveEmailMessage || attachmentsData.saveEmailAttachments) {
+        try {
+          attachmentPaths = await processAttachments(
+            subject,
+            attachmentsData.saveEmailMessage,
+            attachmentsData.saveEmailAttachments
+          );
+
+          console.log("Uploaded files: ", attachmentPaths);
+        } catch (error) {
+          console.error("Attachment process failed: ", error);
+          setMessage("Failed to process attachments");
+          setMessageType("error");
+        }
+      }
 
       let emailBody = "Email content goes here";
 
@@ -122,8 +141,11 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
         selectedBP,
         followUpData,
         attachmentsData,
-        emailBody
+        emailBody,
+        attachmentPaths
       );
+
+      // activityData.AttachmentPaths = attachmentPaths;
       console.log("Activity data to POST: ", activityData);
 
       //Send POST request to API

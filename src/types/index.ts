@@ -30,6 +30,7 @@ export interface OutlookActivity {
   ShouldCreateReminder: boolean;
   ShouldSaveMessage: boolean;
   ShouldSaveAttachments: boolean;
+  AttachmentPaths: string;
   ActivityTypeId: number;
   ActivityTypeName?: string; // Optional since it's not always needed
   FollowUpStartDate: string;

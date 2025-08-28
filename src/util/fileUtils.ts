@@ -25,5 +25,5 @@ export const createUniqueFilename = (originalName: string, uniqueId: string): st
 };
 
 export const buildAttachmentPath = (filename: string): string => {
-  return `\\\\hanatools\\hanadata\Attachments\\SBOHTRI\\${filename}`;
+  return `\\\\hanatools\\hanadata\\Attachments\\SBOHTRI\\${filename}`;
 };
