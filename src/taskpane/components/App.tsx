@@ -223,6 +223,15 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     try {
       const results = await searchBusinessPartners(cardCode, name, email);
 
+      //If we have just a single result, auto select it for user convenience
+      if (results.length === 1) {
+        console.log("Single result found, auto-selecting: ", results[0]);
+        await handleBpSelect(results[0]);
+        setMessage(`Auto-selected: ${results[0].CardName}`);
+        setMessageType("success");
+        return; //Exit early, don't show modal
+      }
+
       setSearchResults(results);
       setLastSearchQuery(name || cardCode || email || "search");
       setIsModalOpen(true);
