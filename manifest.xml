@@ -96,11 +96,11 @@
       </Hosts>
       <Resources>
         <bt:Images>
-          <bt:Image id="Icon.16x16" DefaultValue="https://localhost:3000/assets/icon-16.png"/>
+          <bt:Image id="Icon.16x16" DefaultValue="https://localhost:3000/assets/SAPIcon16.png"/>
           <!-- <bt:Image id="Icon.16x16" DefaultValue="https://saponline.htri.net/OutlookAddin/assets/icon-16.png"/> -->
-          <bt:Image id="Icon.32x32" DefaultValue="https://localhost:3000/assets/icon-32.png"/>
+          <bt:Image id="Icon.32x32" DefaultValue="https://localhost:3000/assets/SAPIcon32.png"/>
           <!-- <bt:Image id="Icon.32x32" DefaultValue="https://saponline.htri.net/OutlookAddin/assets/icon-32.png"/> -->
-          <bt:Image id="Icon.80x80" DefaultValue="https://localhost:3000/assets/icon-80.png"/>
+          <bt:Image id="Icon.80x80" DefaultValue="https://localhost:3000/assets/SAPIcon80.png"/>
           <!-- <bt:Image id="Icon.80x80" DefaultValue="https://saponline.htri.net/OutlookAddin/assets/icon-80.png"/> -->
         </bt:Images>
         <bt:Urls>

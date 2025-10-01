@@ -47,7 +47,7 @@ export const calculateReminderDate = (
 // Build OutlookActivity object from form data
 export const buildOutlookActivity = (
   subject: string,
-  _selectedCategory: string, //TODO
+  selectedCategory: string,
   selectedBP: { cardCode: string; projectCode: string } | null,
   followUpData: FollowUpData,
   attachmentsData: AttachmentsData,
@@ -81,7 +81,8 @@ export const buildOutlookActivity = (
     ShouldSaveMessage: attachmentsData.saveEmailMessage,
     ShouldSaveAttachments: attachmentsData.saveEmailAttachments,
     AttachmentPaths: attachmentPaths,
-    ActivityTypeId: ACTIVITY_TYPE_MAP[followUpData.activity] || ACTIVITY_TYPE_MAP["other"],
+    // ActivityTypeId: ACTIVITY_TYPE_MAP[followUpData.activity] || ACTIVITY_TYPE_MAP["other"],
+    ActivityTypeId: parseInt(selectedCategory) || -1,
     ActivityTypeName: followUpData.activity,
     FollowUpStartDate: followUpData.dueDate,
     FollowUpEndDate: followUpEndDate,

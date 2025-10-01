@@ -32,10 +32,33 @@ export interface AppProps {
 }
 
 const categoryOptions = [
-  { key: "discussion", text: "Discussion" },
-  { key: "mail", text: "Mail" },
-  { key: "member", text: "Member" },
-  { key: "prospect", text: "Prospect" },
+  { key: "6", text: "Closing" },
+  { key: "7", text: "Currency Conversion" },
+  { key: "18", text: "Discussion" },
+  { key: "11", text: "Do Not Use(Cus Vis)" },
+  { key: "16", text: "Do Not Use(Phone)" },
+  { key: "19", text: "Error" },
+  { key: "21", text: "Educational" },
+  { key: "15", text: "Exhibition" },
+  { key: "8", text: "Export Check" },
+  { key: "3", text: "Follow Up: E-mail" },
+  { key: "-1", text: "General" },
+  { key: "14", text: "Mail" },
+  { key: "13", text: "Member" },
+  { key: "25", text: "Other" },
+  { key: "22", text: "Pay. Term: Fixed" },
+  { key: "23", text: "Pay. Term: Milestone" },
+  { key: "24", text: "Pay. Term: Reimburse" },
+  { key: "17", text: "Phone Call" },
+  { key: "5", text: "Product Order Form" },
+  { key: "12", text: "Prospect" },
+  { key: "9", text: "Quote" },
+  { key: "2", text: "Received E-mail" },
+  { key: "26", text: "Send Email Membership" },
+  { key: "4", text: "Sent E-mail" },
+  { key: "1", text: "Short Term Key" },
+  { key: "10", text: "Trial" },
+  { key: "20", text: "WebEx session" },
 ];
 
 const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
@@ -43,6 +66,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   const [subject, setSubject] = useState<string>("");
   const [selectedCategory, setSeclectedCategory] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [messageType, setMessageType] = useState<"info" | "success" | "warning" | "error">("info");
 
@@ -97,8 +121,8 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     }
 
     try {
-      setIsLoading(true);
-      setMessage("Processing Attachments and saving email activity...");
+      setIsSaving(true);
+      setMessage("Saving activity, please wait...");
       setMessageType("info");
 
       //Process attachments first
@@ -176,7 +200,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       setMessage(`Save Failed: ${errorMessage}`);
       setMessageType("error");
     } finally {
-      setIsLoading(false);
+      setIsSaving(false);
       setTimeout(() => setMessage(""), 10000); // Clear message after 10 seconds
     }
   };
@@ -188,6 +212,11 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
 
   const handleCategoryChange = (_event: any, data: any) => {
     setSeclectedCategory(data.optionValue || "");
+  };
+
+  const getCategoryText = (key: string): string => {
+    const option = categoryOptions.find((opt) => opt.key === key);
+    return option ? option.text : "";
   };
 
   const handleFind = async (cardCode: string, name: string, email: string) => {
@@ -316,6 +345,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       {message && (
         <MessageBar intent={messageType} style={{ marginBottom: tokens.spacingVerticalS }}>
           {message}
+          {isSaving && <Spinner size="tiny" style={{ marginRight: tokens.spacingHorizontalXS }} />}
         </MessageBar>
       )}
       {/* <Card className={styles.header}>
@@ -346,6 +376,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="Enter email subject"
+              disabled={isSaving}
             />
           )}
         </div>
@@ -358,9 +389,10 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           <Dropdown
             id="category-dropdown"
             placeholder="Select a type"
-            value={selectedCategory}
+            value={getCategoryText(selectedCategory)}
             selectedOptions={selectedCategory ? [selectedCategory] : []}
             onOptionSelect={handleCategoryChange}
+            disabled={isSaving}
           >
             {categoryOptions.map((option) => (
               <Option key={option.key} value={option.key}>
@@ -380,13 +412,14 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           onFollowUpChange={handleFollowUpDataChanged}
           attachmentsData={attachmentsData}
           onAttachmentsChange={handleAttachmentsDataChanged}
+          disabled={isSaving}
         />
 
         <div className={styles.buttonGroup}>
-          <Button appearance="primary" onClick={handleSave} disabled={isLoading}>
+          <Button appearance="primary" onClick={handleSave} disabled={isSaving}>
             Save
           </Button>
-          <Button appearance="secondary" onClick={handleCancel}>
+          <Button appearance="secondary" onClick={handleCancel} disabled={isSaving}>
             Cancel
           </Button>
         </div>

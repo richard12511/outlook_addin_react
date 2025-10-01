@@ -25,6 +25,7 @@ export interface TabsProps {
   onFollowUpChange: (data: FollowUpData) => void;
   attachmentsData: AttachmentsData;
   onAttachmentsChange: (data: AttachmentsData) => void;
+  disabled?: boolean;
 }
 
 const Tabs: React.FC<TabsProps> = ({
@@ -38,6 +39,7 @@ const Tabs: React.FC<TabsProps> = ({
   onFollowUpChange,
   attachmentsData,
   onAttachmentsChange,
+  disabled,
 }) => {
   const styles = useStyles();
 
@@ -49,7 +51,12 @@ const Tabs: React.FC<TabsProps> = ({
 
   return (
     <div className={styles.tabContainer}>
-      <TabList selectedValue={activeTab} onTabSelect={handleTabSelect} className={styles.tabList}>
+      <TabList
+        selectedValue={activeTab}
+        onTabSelect={handleTabSelect}
+        className={styles.tabList}
+        disabled={disabled}
+      >
         <Tab value="search">Search</Tab>
         <Tab value="selected" disabled={!selectedBP}>
           Selected BP
