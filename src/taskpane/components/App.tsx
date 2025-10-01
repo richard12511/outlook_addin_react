@@ -318,7 +318,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           {message}
         </MessageBar>
       )}
-      <Card className={styles.header}>
+      {/* <Card className={styles.header}>
         <CardHeader
           header={
             <Text weight="semibold" size={400}>
@@ -327,7 +327,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           }
           description={<Text size={200}>Save email to external database</Text>}
         />
-      </Card>
+      </Card> */}
 
       <div className={styles.form}>
         <div className={styles.inputGroup}>
@@ -423,7 +423,7 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     gap: tokens.spacingVerticalM,
-    flex: 1,
+    // flex: 1,
   },
   inputGroup: {
     display: "flex",
@@ -433,8 +433,9 @@ const useStyles = makeStyles({
   buttonGroup: {
     display: "flex",
     gap: tokens.spacingHorizontalM,
-    marginTop: "auto",
-    paddingTop: tokens.spacingVerticalM,
+    // marginTop: "auto",
+    marginTop: tokens.spacingVerticalM,
+    paddingTop: tokens.spacingVerticalS,
   },
 });
 

@@ -11,7 +11,9 @@ export const searchBusinessPartners = async (
   email?: string
 ): Promise<BusinessPartner[]> => {
   console.log("Searching for business partners with:", { cardCode, name, email });
-
+  // console.log("from env:", process.env.API_USERNAME);
+  // console.log("Credentials length:", credentials.length);
+  console.log("from constants: ", USERNAME);
   // Create auth header
   const credentials = btoa(`${USERNAME}:${PASSWORD}`);
 
@@ -23,6 +25,7 @@ export const searchBusinessPartners = async (
 
   const url = `${API_BASE_URL}/OutlookAddin/SearchBps?${params.toString()}`;
   console.log("Making request to:", url);
+  console.log(`Basic ${credentials}`);
 
   const response = await fetch(url, {
     method: "GET",
