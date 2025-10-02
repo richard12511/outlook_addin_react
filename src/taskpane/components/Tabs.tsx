@@ -10,7 +10,7 @@ import { AttachmentsData, FollowUpData } from "../../types";
 export interface TabsProps {
   onFindClick: (cardCode: string, name: string, email: string) => void;
   onBrowse: (cardCode: string, name: string, email: string) => void;
-  onProjectFindClick: (projectCode: string) => void;
+  onProjectFindClick: (projectCode: string, projectName: string, projectPath: string) => void;
   selectedBP: {
     cardCode: string;
     name: string;

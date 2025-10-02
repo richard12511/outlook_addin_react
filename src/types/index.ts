@@ -21,6 +21,12 @@ export interface BusinessPartner {
   Country?: string;
 }
 
+export interface Project {
+  Code: string;
+  ProjectName: string;
+  ProjectPath: string;
+}
+
 export interface OutlookActivity {
   CardCode: string;
   Subject: string;

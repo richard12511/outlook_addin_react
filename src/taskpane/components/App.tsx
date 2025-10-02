@@ -23,8 +23,11 @@ import { getInvolvements } from "../../api/getInvolvements";
 import { getCurrentDate, getCurrentTime, getDefaultDate } from "../../util/dateUtils";
 import { buildOutlookActivity } from "../../util/activityUtils";
 import { createActivity } from "../../api/createActivity";
-import { AttachmentsData, BusinessPartner, FollowUpData } from "../../types";
+import { AttachmentsData, BusinessPartner, FollowUpData, Project } from "../../types";
 import { processAttachments } from "../../util/attachmentProcessor";
+import ProjectModal from "./ProjectModal";
+import { getBpForProject } from "../../api/getBpForProject";
+import { searchProjects } from "../../api/searchProjects";
 
 export interface AppProps {
   title: string;
@@ -74,6 +77,11 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<BusinessPartner[]>([]);
   const [lastSearchQuery, setLastSearchQuery] = useState<string>("");
+
+  //Projects Results Modal
+  const [isProjModalOpen, setIsProjModalOpen] = useState<boolean>(false);
+  const [projSearchResults, setProjSearchResults] = useState<Project[]>([]);
+  const [lastProjSearchQuery, setLastProjSearchQuery] = useState<string>("");
 
   //Follow-Up Tab data
   const [followUpData, setFollowUpData] = useState<FollowUpData>({
@@ -256,12 +264,9 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       projectCode: "",
     };
 
-    console.log("before getInvolvements");
-    console.log("selectedBPData.cardCode: ", selectedBPData.cardCode);
     const results = await getInvolvements(selectedBPData.cardCode);
     console.log("results of getInvolvements: ", results);
     selectedBPData.involvements = results;
-    console.log("after getInvolvements");
     //Fill the SelectedBpCard data with results and switch tabs
     setSelectedBP(selectedBPData);
 
@@ -300,8 +305,59 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     //make browse call
   };
 
-  const handleProjectFind = (projectCode: string) => {
-    console.log("Project Find clicked with: ", { projectCode });
+  const handleProjectFind = async (
+    projectCode: string,
+    projectName: string,
+    projectPath: string
+  ) => {
+    console.log("Project Find clicked with: ", { projectCode, projectName, projectPath });
+    try {
+      const results = await searchProjects(projectCode, projectName, projectPath);
+
+      if (results.length === 1) {
+        await handleProjectSelect(results[0]);
+        setMessage(`Auto-selected: ${results[0].ProjectName}`);
+        setMessageType("success");
+        return; //Exit early, don't even show the modal
+      }
+
+      setProjSearchResults(results);
+      setLastProjSearchQuery(projectCode || projectName || projectPath || "search");
+      setIsProjModalOpen(true);
+      setMessage(`Found ${results.length} results`);
+      setMessageType("success");
+    } catch (error) {
+      console.error("Search Projects error: ", error);
+      setMessage(error instanceof Error ? error.message : "Search Projects failed");
+      setMessageType("error");
+    }
+  };
+
+  const handleCloseProjectModal = () => {
+    setIsProjModalOpen(false);
+    setProjSearchResults([]);
+    setLastProjSearchQuery("");
+  };
+
+  const handleProjectSelect = async (project: Project) => {
+    const bpForProjResults = await getBpForProject(project.Code);
+    const bp = bpForProjResults.bp;
+    const selectedBPData = {
+      cardCode: bp.CardCode,
+      name: bp.CardName,
+      city: bp.City,
+      country: bp.Country,
+      involvements: bpForProjResults.involvements,
+      projectCode: project.Code,
+    };
+
+    setSelectedBP(selectedBPData);
+    console.log("bp selected: ", selectedBPData);
+
+    setActiveTab("selected");
+    setMessage(`Selected: Project: ${project.Code}, ${bp.CardName} (${bp.CardCode})`);
+    setMessageType("success");
+    setTimeout(() => setMessage(""), 3000);
   };
 
   useEffect(() => {
@@ -434,13 +490,20 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
         </div>
       </div>
 
-      {/* Business Partner Modal */}
+      {/* Results Modals */}
       <BpModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onSelect={handleBpSelect}
         searchResults={searchResults}
         searchQuery={lastSearchQuery}
+      />
+      <ProjectModal
+        isOpen={isProjModalOpen}
+        onClose={handleCloseProjectModal}
+        onSelect={handleProjectSelect}
+        searchResults={projSearchResults}
+        searchQuery={lastProjSearchQuery}
       />
     </div>
   );

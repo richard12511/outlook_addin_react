@@ -3,16 +3,18 @@ import { useState } from "react";
 import { makeStyles, Button, Input, Label, Card, Text, tokens } from "@fluentui/react-components";
 
 export interface FindProjectProps {
-  onFind: (projectCode: string) => void;
+  onFind: (projectCode: string, projectName: string, projectPath: string) => void;
 }
 
 const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProps) => {
   const styles = useStyles();
   const [projectCode, setProjectCode] = useState<string>("");
+  const [projectName, setProjectName] = useState<string>("");
+  const [projectPath, setProjectPath] = useState<string>("");
 
   const handleFindClicked = () => {
     console.log("Find clicked with: ", projectCode);
-    onFind(projectCode);
+    onFind(projectCode, projectName, projectPath);
   };
 
   return (
@@ -23,7 +25,7 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
 
       <div className={styles.cardContent}>
         <div className={styles.inputGroup}>
-          <Label htmlFor="project-code-input" size="medium">
+          <Label htmlFor="project-code-input" size="small">
             Project Code:
           </Label>
           <Input
@@ -31,6 +33,32 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
             value={projectCode}
             onChange={(e) => setProjectCode(e.target.value)}
             placeholder="Project Code"
+            size="small"
+          />
+        </div>
+
+        <div className={styles.inputGroup}>
+          <Label htmlFor="project-name-input" size="small">
+            Project Name:
+          </Label>
+          <Input
+            id="project-name-input"
+            value={projectName}
+            onChange={(e) => setProjectName(e.target.value)}
+            placeholder="Project Name"
+            size="small"
+          />
+        </div>
+
+        <div className={styles.inputGroup}>
+          <Label htmlFor="project-path-input" size="small">
+            Project Path:
+          </Label>
+          <Input
+            id="project-path-input"
+            value={projectPath}
+            onChange={(e) => setProjectPath(e.target.value)}
+            placeholder="Project Path"
             size="small"
           />
         </div>
