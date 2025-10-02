@@ -70,6 +70,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   const [selectedCategory, setSeclectedCategory] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isSearching, setIsSearching] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [messageType, setMessageType] = useState<"info" | "success" | "warning" | "error">("info");
 
@@ -231,6 +232,10 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
 
   const handleFind = async (cardCode: string, name: string, email: string) => {
     try {
+      setIsSaving(true);
+      setMessage("Searching for Business Partners...");
+      setMessageType("info");
+
       const results = await searchBusinessPartners(cardCode, name, email);
 
       //If we have just a single result, auto select it for user convenience
@@ -252,6 +257,9 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       console.error("Search error:", error);
       setMessage(error instanceof Error ? error.message : "Search failed");
       setMessageType("error");
+    } finally {
+      setIsSaving(false);
+      setTimeout(() => setMessage(""), 3000);
     }
   };
 
@@ -316,11 +324,14 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   ) => {
     console.log("Project Find clicked with: ", { projectCode, projectName, projectPath });
     try {
+      setIsSaving(true);
+      setMessage("Searching for Projects...");
+      setMessageType("info");
       const results = await searchProjects(projectCode, projectName, projectPath);
 
       if (results.length === 1) {
         await handleProjectSelect(results[0]);
-        setMessage(`Auto-selected: ${results[0].ProjectName}`);
+        // setMessage(`Auto-selected: ${results[0].ProjectName}`);
         setMessageType("success");
         return; //Exit early, don't even show the modal
       }
@@ -334,6 +345,9 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       console.error("Search Projects error: ", error);
       setMessage(error instanceof Error ? error.message : "Search Projects failed");
       setMessageType("error");
+    } finally {
+      setIsSaving(false);
+      setTimeout(() => setMessage(""), 3000);
     }
   };
 
