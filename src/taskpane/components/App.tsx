@@ -108,6 +108,8 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     country: string;
     involvements: string[];
     projectCode: string;
+    projectName: string;
+    projectPath: string;
   } | null>(null);
 
   //Tab state
@@ -262,6 +264,8 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       country: bp.Country,
       involvements: [],
       projectCode: "",
+      projectName: "",
+      projectPath: "",
     };
 
     const results = await getInvolvements(selectedBPData.cardCode);
@@ -349,6 +353,8 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       country: bp.Country,
       involvements: bpForProjResults.involvements,
       projectCode: project.Code,
+      projectName: project.ProjectName,
+      projectPath: project.ProjectPath,
     };
 
     setSelectedBP(selectedBPData);

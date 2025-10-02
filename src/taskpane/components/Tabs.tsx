@@ -18,6 +18,8 @@ export interface TabsProps {
     country: string;
     involvements: string[];
     projectCode: string;
+    projectName: string;
+    projectPath: string;
   } | null;
   activeTab?: TabValue;
   onTabChange?: (tabValue: TabValue) => void;
@@ -81,6 +83,8 @@ const Tabs: React.FC<TabsProps> = ({
             country={selectedBP.country}
             involvements={selectedBP.involvements}
             projectCode={selectedBP.projectCode}
+            projectName={selectedBP.projectName}
+            projectPath={selectedBP.projectPath}
           />
         )}
 

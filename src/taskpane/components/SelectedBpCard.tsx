@@ -8,6 +8,8 @@ export interface SelectedBpCardProps {
   country: string;
   involvements: string[];
   projectCode: string;
+  projectName: string;
+  projectPath: string;
 }
 
 const SelectedBpCard: React.FC<SelectedBpCardProps> = ({
@@ -17,6 +19,8 @@ const SelectedBpCard: React.FC<SelectedBpCardProps> = ({
   country,
   involvements,
   projectCode,
+  projectName,
+  projectPath,
 }: SelectedBpCardProps) => {
   const styles = useStyles();
 
@@ -64,6 +68,18 @@ const SelectedBpCard: React.FC<SelectedBpCardProps> = ({
             Project Code:
           </Label>
           <Input id="project-code-input" value={projectCode} size="small" />
+        </div>
+        <div className={styles.inputGroup}>
+          <Label htmlFor="project-name-input" size="small">
+            Project Name:
+          </Label>
+          <Input id="project-name-input" value={projectName} size="small" />
+        </div>
+        <div className={styles.inputGroup}>
+          <Label htmlFor="project-path-input" size="small">
+            Project Path:
+          </Label>
+          <Input id="project-path-input" value={projectPath} size="small" />
         </div>
       </div>
     </Card>
