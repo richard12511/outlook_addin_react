@@ -70,7 +70,6 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   const [selectedCategory, setSeclectedCategory] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [isSearching, setIsSearching] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const [messageType, setMessageType] = useState<"info" | "success" | "warning" | "error">("info");
 
@@ -389,9 +388,15 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   const loadEmailSubject = async () => {
     try {
       const item = Office.context.mailbox.item;
-      if (item && item.subject) {
-        if (item.subject.getAsync) {
-          //For compose mode
+      if (item) {
+        // Check if we're in compose mode by checking if subject has getAsync method
+        // In compose mode, properties use async getters; in read mode, they're direct properties
+        const isComposeMode = typeof item.subject.getAsync === "function";
+
+        if (isComposeMode) {
+          // Composing/sending an email
+          setSeclectedCategory("4"); // Sent E-mail
+
           item.subject.getAsync((result) => {
             if (result.status === Office.AsyncResultStatus.Succeeded) {
               setSubject(result.value || "");
@@ -399,15 +404,19 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
             setIsLoading(false);
           });
         } else {
-          //For read mode
+          // Reading a received email
+          setSeclectedCategory("2"); // Received E-mail
+
           setSubject(item.subject || "");
           setIsLoading(false);
         }
       } else {
+        setSeclectedCategory("-1"); // General
         setIsLoading(false);
       }
     } catch (error) {
       console.error("Error loading email subject:", error);
+      setSeclectedCategory("-1");
       setIsLoading(false);
     }
   };
