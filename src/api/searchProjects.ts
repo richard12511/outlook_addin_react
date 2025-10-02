@@ -6,16 +6,14 @@ export interface SearchProjectsResponse {
 }
 
 export const searchProjects = async (
-  code?: string,
+  projectCode?: string,
   projectName?: string,
   projectPath?: string
 ): Promise<Project[]> => {
-  console.log("Search for projects with: ", { code, name: projectName, path: projectPath });
-
   const credentials = btoa(`${USERNAME}:${PASSWORD}`);
 
   const params = new URLSearchParams();
-  if (code) params.append("code", code);
+  if (projectCode) params.append("projectCode", projectCode);
   if (projectName) params.append("projectName", projectName);
   if (projectPath) params.append("projectPath", projectPath);
 
