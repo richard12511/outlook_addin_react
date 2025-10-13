@@ -1,9 +1,11 @@
 import * as React from "react";
 import { useState } from "react";
 import { makeStyles, Button, Input, Label, Card, Text, tokens } from "@fluentui/react-components";
+import { ChevronDown20Regular, ChevronUp20Regular } from "@fluentui/react-icons";
 
 export interface FindProjectProps {
   onFind: (projectCode: string, projectName: string, projectPath: string) => void;
+  // disabled?: boolean;
 }
 
 const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProps) => {
@@ -11,6 +13,7 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
   const [projectCode, setProjectCode] = useState<string>("");
   const [projectName, setProjectName] = useState<string>("");
   const [projectPath, setProjectPath] = useState<string>("");
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const handleFindClicked = () => {
     console.log("Find clicked with: ", projectCode);
@@ -32,12 +35,50 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
             id="project-code-input"
             value={projectCode}
             onChange={(e) => setProjectCode(e.target.value)}
-            placeholder="Project Code"
+            placeholder="Search by project code, ex: '15876'"
             size="small"
+            // disabled={disabled}
           />
         </div>
 
-        <div className={styles.inputGroup}>
+        <Button
+          appearance="subtle"
+          icon={isExpanded ? <ChevronUp20Regular /> : <ChevronDown20Regular />}
+          onClick={() => setIsExpanded(!isExpanded)}
+          className={styles.expandButton}
+          // disabled={disabled}
+        >
+          {isExpanded ? "Hide" : "Show"} additional filters
+        </Button>
+
+        {/* Collapsable Section */}
+        {isExpanded && (
+          <div className={styles.collapsibleSection}>
+            <div className={styles.inputGroup}>
+              <Label htmlFor="project-name">Project Name:</Label>
+              <Input
+                id="project-name"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                placeholder="Search by project name, ex: '2025'"
+                // disabled={disabled}
+              />
+            </div>
+
+            <div className={styles.inputGroup}>
+              <Label htmlFor="project-path">Project Path:</Label>
+              <Input
+                id="project-path"
+                value={projectPath}
+                onChange={(e) => setProjectPath(e.target.value)}
+                placeholder="Search by project path, ex: 'Training->Training Events'"
+                // disabled={disabled}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* <div className={styles.inputGroup}>
           <Label htmlFor="project-name-input" size="small">
             Project Name:
           </Label>
@@ -45,8 +86,9 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
             id="project-name-input"
             value={projectName}
             onChange={(e) => setProjectName(e.target.value)}
-            placeholder="Project Name"
+            placeholder="Search by project name, ex: '2025'"
             size="small"
+            disabled={disabled}
           />
         </div>
 
@@ -58,10 +100,11 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
             id="project-path-input"
             value={projectPath}
             onChange={(e) => setProjectPath(e.target.value)}
-            placeholder="Project Path"
+            placeholder="Search by project path, ex: 'Training->Training Events'"
             size="small"
+            disabled={disabled}
           />
-        </div>
+        </div> */}
 
         <div className={styles.cardButtonGroup}>
           <Button appearance="outline" size="small" onClick={handleFindClicked}>
@@ -97,5 +140,14 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     gap: tokens.spacingVerticalXS,
+  },
+  expandButton: {
+    width: "fit-content",
+    paddingLeft: 0,
+  },
+  collapsibleSection: {
+    display: "flex",
+    flexDirection: "column",
+    gap: tokens.spacingVerticalS,
   },
 });
