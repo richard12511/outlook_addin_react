@@ -24,7 +24,7 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
 
   return (
     <Card className={styles.bpCard}>
-      <Text weight="semibold" size={400} style={{ marginBottom: tokens.spacingVerticalS }}>
+      <Text weight="semibold" size={300}>
         Find Business Partner
       </Text>
 
@@ -84,20 +84,20 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
 
 const useStyles = makeStyles({
   bpCard: {
-    padding: tokens.spacingVerticalM,
+    padding: tokens.spacingVerticalXS,
     border: `1px solid ${tokens.colorNeutralStroke2}`,
     borderRadius: tokens.borderRadiusMedium,
   },
   cardContent: {
     display: "flex",
     flexDirection: "column",
-    gap: tokens.spacingVerticalS,
+    gap: tokens.spacingVerticalXS,
   },
   cardButtonGroup: {
     display: "flex",
-    gap: tokens.spacingHorizontalM,
+    gap: tokens.spacingHorizontalXS,
     marginTop: "auto",
-    paddingTop: tokens.spacingVerticalM,
+    paddingTop: tokens.spacingVerticalXS,
   },
   inputGroup: {
     display: "flex",

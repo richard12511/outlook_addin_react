@@ -88,20 +88,20 @@ const SelectedBpCard: React.FC<SelectedBpCardProps> = ({
 
 const useStyles = makeStyles({
   bpCard: {
-    padding: tokens.spacingVerticalM,
+    padding: tokens.spacingVerticalXS,
     border: `1px solid ${tokens.colorNeutralStroke2}`,
     borderRadius: tokens.borderRadiusMedium,
   },
   cardContent: {
     display: "flex",
     flexDirection: "column",
-    gap: tokens.spacingVerticalS,
+    gap: tokens.spacingVerticalXS,
   },
   cardButtonGroup: {
     display: "flex",
-    gap: tokens.spacingHorizontalM,
+    gap: tokens.spacingHorizontalXS,
     marginTop: "auto",
-    paddingTop: tokens.spacingVerticalM,
+    paddingTop: tokens.spacingVerticalXS,
   },
   inputGroup: {
     display: "flex",

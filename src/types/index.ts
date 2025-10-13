@@ -45,6 +45,7 @@ export interface OutlookActivity {
   ReminderTime: number; // Time as HHMM (like 1605 for 4:05 PM)
   ReminderType: string; // "M" for Minutes, "H" for Hours, "D" for Days
   ReminderQuantity: number;
+  OutlookUser?: string;
 }
 
 export interface CreateActivityResponse {

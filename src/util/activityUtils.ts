@@ -52,7 +52,8 @@ export const buildOutlookActivity = (
   followUpData: FollowUpData,
   attachmentsData: AttachmentsData,
   emailBody?: string,
-  attachmentPaths?: string
+  attachmentPaths?: string,
+  outlookUser?: string
 ): OutlookActivity => {
   if (!selectedBP) {
     throw new Error("No business partner selected");
@@ -90,5 +91,6 @@ export const buildOutlookActivity = (
     ReminderTime: timeStringToInteger(followUpData.dueTime),
     ReminderType: REMINDER_TYPE_MAP[followUpData.reminderUnit] || "M",
     ReminderQuantity: parseInt(followUpData.reminderValue) || 15,
+    OutlookUser: outlookUser || "",
   };
 };

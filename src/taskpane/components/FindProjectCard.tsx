@@ -19,7 +19,7 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
 
   return (
     <Card className={styles.projectCard}>
-      <Text weight="semibold" size={400} style={{ marginBottom: tokens.spacingVerticalS }}>
+      <Text weight="semibold" size={300}>
         Find Project
       </Text>
 
@@ -77,21 +77,21 @@ export default FindProjectCard;
 
 const useStyles = makeStyles({
   projectCard: {
-    padding: tokens.spacingVerticalM,
+    padding: tokens.spacingVerticalXS,
     border: `1px solid ${tokens.colorNeutralStroke2}`,
     borderRadius: tokens.borderRadiusMedium,
-    marginTop: tokens.spacingVerticalM,
+    marginTop: tokens.spacingVerticalXS,
   },
   cardContent: {
     display: "flex",
     flexDirection: "column",
-    gap: tokens.spacingVerticalS,
+    gap: tokens.spacingVerticalXS,
   },
   cardButtonGroup: {
     display: "flex",
-    gap: tokens.spacingHorizontalM,
+    gap: tokens.spacingHorizontalXS,
     marginTop: "auto",
-    paddingTop: tokens.spacingVerticalM,
+    paddingTop: tokens.spacingVerticalXS,
   },
   inputGroup: {
     display: "flex",

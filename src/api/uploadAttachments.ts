@@ -28,12 +28,16 @@ export const uploadFile = async (
   });
 
   if (!response.ok) {
+    console.log("Upload Attachment failed response object: ", response);
     throw new Error(`Upload failed: ${response.statusText}`);
   }
 
+  const result = await response.json();
+  const actualFilename = result.cleanedFilename || uniqueFilename;
+
   return {
     originalName: originalFilename,
-    uniqueFilename,
-    fullPath: buildAttachmentPath(uniqueFilename),
+    uniqueFilename: actualFilename,
+    fullPath: buildAttachmentPath(actualFilename),
   };
 };

@@ -70,6 +70,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   const [selectedCategory, setSeclectedCategory] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [didAttachmentUpload, setDidAttachmentUpload] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("");
   const [messageType, setMessageType] = useState<"info" | "success" | "warning" | "error">("info");
 
@@ -135,7 +136,10 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       setMessage("Saving activity, please wait...");
       setMessageType("info");
 
-      //Process attachments first
+      const userEmail = getUserEmail();
+      console.log("Current user email: ", userEmail);
+
+      //Process attachments
       let attachmentPaths = "";
       if (attachmentsData.saveEmailMessage || attachmentsData.saveEmailAttachments) {
         try {
@@ -146,10 +150,14 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           );
 
           console.log("Uploaded files: ", attachmentPaths);
+          setDidAttachmentUpload(true);
         } catch (error) {
           console.error("Attachment process failed: ", error);
-          setMessage("Failed to process attachments");
+          setDidAttachmentUpload(false);
+          setMessage("Failed to upload attachment");
+          setTimeout(() => setMessage(""), 5000);
           setMessageType("error");
+          return;
         }
       }
 
@@ -161,7 +169,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
         if (item && item.body) {
           if (item.body.getAsync) {
             //This is async, so just testing weith placeholder for now
-            emailBody = `Email from Outlook Addin\nSubject: ${subject}`;
+            emailBody = `${subject}`;
           }
         }
       } catch (error) {
@@ -176,7 +184,8 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
         followUpData,
         attachmentsData,
         emailBody,
-        attachmentPaths
+        attachmentPaths,
+        userEmail
       );
 
       // activityData.AttachmentPaths = attachmentPaths;
@@ -201,7 +210,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
         // Optionally reset form or close add-in
         // resetForm();
       } else {
-        setMessage("Failed to save email activity. Please try again.");
+        setMessage("Failed to save email activity. Please contact a system admin.");
         setMessageType("error");
       }
     } catch (error) {
@@ -211,7 +220,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       setMessageType("error");
     } finally {
       setIsSaving(false);
-      setTimeout(() => setMessage(""), 10000); // Clear message after 10 seconds
+      setTimeout(() => setMessage(""), 30000); // Clear message after 10 seconds
     }
   };
 
@@ -431,6 +440,16 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     );
   }
 
+  const getUserEmail = (): string => {
+    try {
+      const userProfile = Office.context.mailbox.userProfile;
+      return userProfile.emailAddress;
+    } catch (error) {
+      console.error("Error getting the user email: ", error);
+      return "";
+    }
+  };
+
   return (
     <div className={styles.root}>
       {/* <Header logo={"../../../assets/logo-filled.png"} title="Save Email" message="" /> */}
@@ -543,20 +562,20 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     height: "100vh",
-    padding: tokens.spacingVerticalM,
-    gap: tokens.spacingVerticalM,
+    padding: tokens.spacingVerticalXS,
+    gap: tokens.spacingVerticalXS,
   },
   header: {
     backgroundColor: tokens.colorBrandBackground,
     color: tokens.colorNeutralForegroundOnBrand,
-    padding: tokens.spacingVerticalM,
+    padding: tokens.spacingVerticalXS,
     textAlign: "center",
     borderRadius: tokens.borderRadiusMedium,
   },
   form: {
     display: "flex",
     flexDirection: "column",
-    gap: tokens.spacingVerticalM,
+    gap: tokens.spacingVerticalXS,
     // flex: 1,
   },
   inputGroup: {
@@ -566,10 +585,10 @@ const useStyles = makeStyles({
   },
   buttonGroup: {
     display: "flex",
-    gap: tokens.spacingHorizontalM,
+    gap: tokens.spacingHorizontalXS,
     // marginTop: "auto",
-    marginTop: tokens.spacingVerticalM,
-    paddingTop: tokens.spacingVerticalS,
+    marginTop: tokens.spacingVerticalXS,
+    paddingTop: tokens.spacingVerticalXS,
   },
 });
 
