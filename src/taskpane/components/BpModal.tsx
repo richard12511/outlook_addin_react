@@ -153,7 +153,7 @@ const BpModal: React.FC<BpModalProps> = ({
               <TableBody>
                 {searchResults.map((partner, index) => (
                   <TableRow
-                    key={partner.CardCode}
+                    key={partner.CardCode + "-" + partner.City + "-" + partner.Country}
                     className={`${styles.tableRow} ${
                       selectedRowIndex === index ? styles.selectedRow : ""
                     }`}

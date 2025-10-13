@@ -21,8 +21,6 @@ export const searchBusinessPartners = async (
   if (email) params.append("email", email);
 
   const url = `${API_BASE_URL}/OutlookAddin/SearchBps?${params.toString()}`;
-  // console.log("Making request to:", url);
-  // console.log(`Basic ${credentials}`);
 
   const response = await fetch(url, {
     method: "GET",

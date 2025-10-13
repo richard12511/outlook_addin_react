@@ -107,6 +107,7 @@ const useStyles = makeStyles({
     display: "flex",
     flexDirection: "column",
     gap: tokens.spacingVerticalS,
+    marginTop: tokens.spacingVerticalXS,
   },
   tabList: {
     backgroundColor: tokens.colorBrandBackground2,

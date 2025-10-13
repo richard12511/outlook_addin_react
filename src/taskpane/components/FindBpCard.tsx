@@ -87,6 +87,7 @@ const useStyles = makeStyles({
     padding: tokens.spacingVerticalXS,
     border: `1px solid ${tokens.colorNeutralStroke2}`,
     borderRadius: tokens.borderRadiusMedium,
+    marginBottom: tokens.spacingVerticalS,
   },
   cardContent: {
     display: "flex",

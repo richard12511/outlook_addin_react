@@ -161,7 +161,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
         }
       }
 
-      let emailBody = "Email content goes here";
+      let emailBody = "Email content not available";
 
       //Extract the email body from message
       try {
@@ -169,7 +169,15 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
         if (item && item.body) {
           if (item.body.getAsync) {
             //This is async, so just testing weith placeholder for now
-            emailBody = `${subject}`;
+            emailBody = await new Promise<string>((resolve, reject) => {
+              item.body.getAsync(Office.CoercionType.Html, (result) => {
+                if (result.status === Office.AsyncResultStatus.Succeeded) {
+                  resolve(result.value || "");
+                } else {
+                  reject(new Error(result.error?.message || "Failed to get email body"));
+                }
+              });
+            });
           }
         }
       } catch (error) {
@@ -225,8 +233,11 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   };
 
   const handleCancel = () => {
-    console.log("Cancel clicked");
-    alert("Cancel clicked");
+    if (Office.context.ui) {
+      Office.context.ui.closeContainer();
+    } else {
+      window.close();
+    }
   };
 
   const handleCategoryChange = (_event: any, data: any) => {
@@ -319,10 +330,29 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     setLastSearchQuery("");
   };
 
-  const handleBrowse = (cardCode: string, name: string, email: string) => {
-    console.log("Browse clicked in parent with:", { cardCode, name, email });
+  const handleBrowse = async () => {
+    try {
+      setIsSaving(true);
+      setMessage("Getting all BPs, this might take awhile...");
+      setMessageType("info");
 
-    //make browse call
+      const results = await searchBusinessPartners(null, null, null);
+      console.log("Browsed bps, results.length: ", results.length);
+
+      setSearchResults(results);
+      setLastSearchQuery("browse");
+      setIsModalOpen(true);
+
+      setMessage(`Found ${results.length} results`);
+      setMessageType("success");
+    } catch (error) {
+      console.error("Search error:", error);
+      setMessage(error instanceof Error ? error.message : "Search failed");
+      setMessageType("error");
+    } finally {
+      setIsSaving(false);
+      setTimeout(() => setMessage(""), 3000);
+    }
   };
 
   const handleProjectFind = async (
@@ -461,16 +491,6 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           {isSaving && <Spinner size="tiny" style={{ marginRight: tokens.spacingHorizontalXS }} />}
         </MessageBar>
       )}
-      {/* <Card className={styles.header}>
-        <CardHeader
-          header={
-            <Text weight="semibold" size={400}>
-              {title}
-            </Text>
-          }
-          description={<Text size={200}>Save email to external database</Text>}
-        />
-      </Card> */}
 
       <div className={styles.form}>
         <div className={styles.inputGroup}>
