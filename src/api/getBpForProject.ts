@@ -1,5 +1,5 @@
 import { BusinessPartner } from "../types";
-import { API_BASE_URL, PASSWORD, USERNAME } from "./apiConstants";
+import { API_BASE_URL, API_BACKUP_URL, PASSWORD, USERNAME } from "./apiConstants";
 
 export interface GetBpForProjectResponse {
   bp: BusinessPartner;
@@ -13,6 +13,7 @@ export const getBpForProject = async (projectCode: string): Promise<GetBpForProj
   if (projectCode) params.append("projectCode", projectCode);
 
   const url = `${API_BASE_URL}/OutlookAddin/GetBpForProject?${params.toString()}`;
+  const backupUrl = `${API_BACKUP_URL}/OutlookAddin/GetBpForProject?${params.toString()}`;
   console.log("Making request to: ", url);
 
   const response = await fetch(url, {
@@ -24,7 +25,20 @@ export const getBpForProject = async (projectCode: string): Promise<GetBpForProj
   });
 
   if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    const retry = await fetch(backupUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Basic ${credentials}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!retry.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const data: GetBpForProjectResponse = await response.json();
+    return data;
   }
 
   const data: GetBpForProjectResponse = await response.json();
