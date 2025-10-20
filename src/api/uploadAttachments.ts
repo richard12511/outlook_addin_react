@@ -22,43 +22,28 @@ export const uploadFile = async (
     return formData;
   };
 
-  const formData = new FormData();
-  formData.append("file", new Blob([fileData]), uniqueFilename);
-  formData.append("originalName", originalFilename);
-
-  const url = `${API_BASE_URL}/OutlookAddin/UploadAttachment`;
-  const backupUrl = `${API_BACKUP_URL}/OutlookAddin/UploadAttachment`;
-
-  const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${credentials}`,
-    },
-    body: createFormData(),
-  });
-
-  if (!response.ok) {
-    console.log("Upload Attachment failed response object: ", response);
-    const retry = await fetch(backupUrl, {
+  const tryUpload = async (url: string) => {
+    return fetch(url, {
       method: "POST",
       headers: {
         Authorization: `Basic ${credentials}`,
       },
       body: createFormData(),
     });
+  };
 
-    if (!retry.ok) {
-      throw new Error(`Upload failed: ${response.statusText}`);
-    }
+  const url = `${API_BASE_URL}/OutlookAddin/UploadAttachment`;
+  const backupUrl = `${API_BACKUP_URL}/OutlookAddin/UploadAttachment`;
 
-    const result = await retry.json();
-    const actualFilename = result.cleanedFilename || uniqueFilename;
+  let response = await tryUpload(url);
 
-    return {
-      originalName: originalFilename,
-      uniqueFilename: actualFilename,
-      fullPath: buildAttachmentPath(actualFilename),
-    };
+  if (!response.ok) {
+    console.log("Upload Attachment failed to primary server response object: ", response);
+    response = await tryUpload(backupUrl);
+  }
+
+  if (!response.ok) {
+    throw new Error(`Upload failed on both servers: ${response.statusText}`);
   }
 
   const result = await response.json();
