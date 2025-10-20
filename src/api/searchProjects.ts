@@ -1,5 +1,5 @@
 import { Project } from "../types";
-import { API_BASE_URL, USERNAME, PASSWORD } from "./apiConstants";
+import { API_BASE_URL, API_BACKUP_URL, USERNAME, PASSWORD } from "./apiConstants";
 
 export interface SearchProjectsResponse {
   projects: Project[];
@@ -18,6 +18,8 @@ export const searchProjects = async (
   if (projectPath) params.append("projectPath", projectPath);
 
   const url = `${API_BASE_URL}/OutlookAddin/SearchProjects?${params.toString()}`;
+  const backupUrl = `${API_BACKUP_URL}/OutlookAddin/SearchProjects?${params.toString()}`;
+
   const response = await fetch(url, {
     method: "GET",
     headers: {
@@ -27,7 +29,20 @@ export const searchProjects = async (
   });
 
   if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    const retry = await fetch(backupUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Basic ${credentials}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!retry.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const data: SearchProjectsResponse = await response.json();
+    return data.projects || [];
   }
 
   const data: SearchProjectsResponse = await response.json();

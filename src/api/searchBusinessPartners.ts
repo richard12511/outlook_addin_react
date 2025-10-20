@@ -1,5 +1,5 @@
 import { BusinessPartner } from "../types";
-import { API_BASE_URL, USERNAME, PASSWORD } from "./apiConstants";
+import { API_BASE_URL, API_BACKUP_URL, USERNAME, PASSWORD } from "./apiConstants";
 
 export interface SearchBPsResponse {
   bps: BusinessPartner[];
@@ -21,6 +21,7 @@ export const searchBusinessPartners = async (
   if (email) params.append("email", email);
 
   const url = `${API_BASE_URL}/OutlookAddin/SearchBps?${params.toString()}`;
+  const backupUrl = `${API_BACKUP_URL}/OutlookAddin/SearchBps?${params.toString()}`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -31,7 +32,20 @@ export const searchBusinessPartners = async (
   });
 
   if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    const retry = await fetch(backupUrl, {
+      method: "GET",
+      headers: {
+        Authorization: `Basic ${credentials}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!retry.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const data: SearchBPsResponse = await response.json();
+    return data.bps || [];
   }
 
   const data: SearchBPsResponse = await response.json();
