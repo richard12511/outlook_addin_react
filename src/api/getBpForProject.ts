@@ -37,7 +37,7 @@ export const getBpForProject = async (projectCode: string): Promise<GetBpForProj
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
-    const data: GetBpForProjectResponse = await response.json();
+    const data: GetBpForProjectResponse = await retry.json();
     return data;
   }
 

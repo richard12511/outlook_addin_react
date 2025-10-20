@@ -34,6 +34,9 @@ export const getInvolvements = async (cardCode: string): Promise<string[]> => {
     if (!retry.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
+
+    const data: GetInvolvementsResponse = await retry.json();
+    return data.involvements || [];
   }
 
   const data: GetInvolvementsResponse = await response.json();

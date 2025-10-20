@@ -1,5 +1,5 @@
 import { createUniqueFilename, buildAttachmentPath } from "../util/fileUtils";
-import { PASSWORD, USERNAME, API_BASE_URL } from "./apiConstants";
+import { PASSWORD, USERNAME, API_BASE_URL, API_BACKUP_URL } from "./apiConstants";
 
 export interface UploadedFile {
   originalName: string;
@@ -15,21 +15,50 @@ export const uploadFile = async (
   const credentials = btoa(`${USERNAME}:${PASSWORD}`);
   const uniqueFilename = createUniqueFilename(originalFilename, uniqueId);
 
+  const createFormData = () => {
+    const formData = new FormData();
+    formData.append("file", new Blob([fileData]), uniqueFilename);
+    formData.append("originalName", originalFilename);
+    return formData;
+  };
+
   const formData = new FormData();
   formData.append("file", new Blob([fileData]), uniqueFilename);
   formData.append("originalName", originalFilename);
 
-  const response = await fetch(`${API_BASE_URL}/OutlookAddin/UploadAttachment`, {
+  const url = `${API_BASE_URL}/OutlookAddin/UploadAttachment`;
+  const backupUrl = `${API_BACKUP_URL}/OutlookAddin/UploadAttachment`;
+
+  const response = await fetch(url, {
     method: "POST",
     headers: {
       Authorization: `Basic ${credentials}`,
     },
-    body: formData,
+    body: createFormData(),
   });
 
   if (!response.ok) {
     console.log("Upload Attachment failed response object: ", response);
-    throw new Error(`Upload failed: ${response.statusText}`);
+    const retry = await fetch(backupUrl, {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${credentials}`,
+      },
+      body: createFormData(),
+    });
+
+    if (!retry.ok) {
+      throw new Error(`Upload failed: ${response.statusText}`);
+    }
+
+    const result = await retry.json();
+    const actualFilename = result.cleanedFilename || uniqueFilename;
+
+    return {
+      originalName: originalFilename,
+      uniqueFilename: actualFilename,
+      fullPath: buildAttachmentPath(actualFilename),
+    };
   }
 
   const result = await response.json();

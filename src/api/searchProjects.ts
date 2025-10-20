@@ -41,7 +41,7 @@ export const searchProjects = async (
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
-    const data: SearchProjectsResponse = await response.json();
+    const data: SearchProjectsResponse = await retry.json();
     return data.projects || [];
   }
 

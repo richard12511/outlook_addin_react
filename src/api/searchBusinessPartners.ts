@@ -44,7 +44,7 @@ export const searchBusinessPartners = async (
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
-    const data: SearchBPsResponse = await response.json();
+    const data: SearchBPsResponse = await retry.json();
     return data.bps || [];
   }
 
