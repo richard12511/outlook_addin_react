@@ -48,7 +48,7 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
           className={styles.expandButton}
           // disabled={disabled}
         >
-          {isExpanded ? "Hide" : "Show"} additional filters
+          {/* {isExpanded ? "Hide" : "Show"} additional filters */}
         </Button>
 
         {/* Collapsable Section */}
