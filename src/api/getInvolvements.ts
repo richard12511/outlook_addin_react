@@ -1,3 +1,4 @@
+import { tryGET } from "../util/httpUtils";
 import { API_BASE_URL, API_BACKUP_URL, PASSWORD, USERNAME } from "./apiConstants";
 
 export interface GetInvolvementsResponse {
@@ -13,29 +14,17 @@ export const getInvolvements = async (cardCode: string): Promise<string[]> => {
   const backupUrl = `${API_BACKUP_URL}/OutlookAddin/GetInvolvements?${params.toString()}`;
   console.log("Making request to: ", url);
 
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      Authorization: `Basic ${credentials}`,
-      "Content-Type": "application/json",
-    },
-  });
+  let response = await tryGET(url, credentials);
 
   if (!response.ok) {
     console.log("Initial call failed, retrying at: ", backupUrl);
-    const retry = await fetch(backupUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Basic ${credentials}`,
-        "Content-Type": "application/json",
-      },
-    });
+    response = await tryGET(backupUrl, credentials);
 
-    if (!retry.ok) {
+    if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
-    const data: GetInvolvementsResponse = await retry.json();
+    const data: GetInvolvementsResponse = await response.json();
     return data.involvements || [];
   }
 
