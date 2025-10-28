@@ -8,3 +8,13 @@ export const tryPOST = async (url: string, credentials: string, body: string) =>
     body: body,
   });
 };
+
+export const tryGET = async (url: string, credentials: string) => {
+  return fetch(url, {
+    method: "GET",
+    headers: {
+      Authorization: `Basic ${credentials}`,
+      "Content-Type": "application/json",
+    },
+  });
+};

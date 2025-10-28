@@ -1,4 +1,5 @@
 import { BusinessPartner } from "../types";
+import { tryGET } from "../util/httpUtils";
 import { API_BASE_URL, API_BACKUP_URL, PASSWORD, USERNAME } from "./apiConstants";
 
 export interface GetBpForProjectResponse {
@@ -16,28 +17,18 @@ export const getBpForProject = async (projectCode: string): Promise<GetBpForProj
   const backupUrl = `${API_BACKUP_URL}/OutlookAddin/GetBpForProject?${params.toString()}`;
   console.log("Making request to: ", url);
 
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      Authorization: `Basic ${credentials}`,
-      "Content-Type": "application/json",
-    },
-  });
+  let response = await tryGET(url, credentials);
 
   if (!response.ok) {
-    const retry = await fetch(backupUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Basic ${credentials}`,
-        "Content-Type": "application/json",
-      },
-    });
+    console.error("Response not OK: ", response.status, response.statusText);
+    console.error("Retrying call to: ", backupUrl);
+    response = await tryGET(backupUrl, credentials);
 
-    if (!retry.ok) {
+    if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
-    const data: GetBpForProjectResponse = await retry.json();
+    const data: GetBpForProjectResponse = await response.json();
     return data;
   }
 
