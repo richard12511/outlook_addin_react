@@ -1,4 +1,5 @@
 import { BusinessPartner } from "../types";
+import { tryGET } from "../util/httpUtils";
 import { API_BASE_URL, API_BACKUP_URL, USERNAME, PASSWORD } from "./apiConstants";
 
 export interface SearchBPsResponse {
@@ -23,28 +24,29 @@ export const searchBusinessPartners = async (
   const url = `${API_BASE_URL}/OutlookAddin/SearchBps?${params.toString()}`;
   const backupUrl = `${API_BACKUP_URL}/OutlookAddin/SearchBps?${params.toString()}`;
 
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      Authorization: `Basic ${credentials}`,
-      "Content-Type": "application/json",
-    },
-  });
+  // const response = await fetch(url, {
+  //   method: "GET",
+  //   headers: {
+  //     Authorization: `Basic ${credentials}`,
+  //     "Content-Type": "application/json",
+  //   },
+  // });
+  let response = await tryGET(url, credentials);
 
   if (!response.ok) {
-    const retry = await fetch(backupUrl, {
-      method: "GET",
-      headers: {
-        Authorization: `Basic ${credentials}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!retry.ok) {
+    // const retry = await fetch(backupUrl, {
+    //   method: "GET",
+    //   headers: {
+    //     Authorization: `Basic ${credentials}`,
+    //     "Content-Type": "application/json",
+    //   },
+    // });
+    response = await tryGET(backupUrl, credentials);
+    if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
-    const data: SearchBPsResponse = await retry.json();
+    const data: SearchBPsResponse = await response.json();
     return data.bps || [];
   }
 
