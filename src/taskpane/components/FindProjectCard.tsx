@@ -20,6 +20,14 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
     onFind(projectCode, projectName, projectPath);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    console.log("handleKeyDown, e.key: ", e.key);
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleFindClicked();
+    }
+  };
+
   return (
     <Card className={styles.projectCard}>
       <Text weight="semibold" size={300}>
@@ -35,6 +43,7 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
             id="project-code-input"
             value={projectCode}
             onChange={(e) => setProjectCode(e.target.value)}
+            onKeyDown={handleKeyDown}
             placeholder="Search by project code, ex: '15876'"
             size="small"
             // disabled={disabled}
@@ -60,6 +69,7 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
                 id="project-name"
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder="Search by project name, ex: '2025'"
                 // disabled={disabled}
               />
@@ -71,40 +81,13 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
                 id="project-path"
                 value={projectPath}
                 onChange={(e) => setProjectPath(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder="Search by project path, ex: 'Training->Training Events'"
                 // disabled={disabled}
               />
             </div>
           </div>
         )}
-
-        {/* <div className={styles.inputGroup}>
-          <Label htmlFor="project-name-input" size="small">
-            Project Name:
-          </Label>
-          <Input
-            id="project-name-input"
-            value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
-            placeholder="Search by project name, ex: '2025'"
-            size="small"
-            disabled={disabled}
-          />
-        </div>
-
-        <div className={styles.inputGroup}>
-          <Label htmlFor="project-path-input" size="small">
-            Project Path:
-          </Label>
-          <Input
-            id="project-path-input"
-            value={projectPath}
-            onChange={(e) => setProjectPath(e.target.value)}
-            placeholder="Search by project path, ex: 'Training->Training Events'"
-            size="small"
-            disabled={disabled}
-          />
-        </div> */}
 
         <div className={styles.cardButtonGroup}>
           <Button appearance="outline" size="small" onClick={handleFindClicked}>

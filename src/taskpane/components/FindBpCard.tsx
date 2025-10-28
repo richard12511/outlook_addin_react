@@ -12,16 +12,9 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
   const [cardCode, setCardCode] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-
-  console.log("Component rendering"); // Add this at the top
-
   const cardCodeRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
   const emailRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    console.log("=== useEffect is running ===");
-  }, []);
 
   const handleFindClicked = () => {
     console.log("Find clicked with:", { cardCode, name, email });
@@ -54,26 +47,17 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
     const nameInput = nameRef.current?.querySelector("input");
     const emailInput = emailRef.current?.querySelector("input");
 
-    console.log("cardCodeRef.current:", cardCodeRef.current);
-    console.log("cardCodeInput:", cardCodeInput);
-    console.log("nameInput:", nameInput);
-    console.log("emailInput:", emailInput);
-
     if (cardCodeInput) {
-      console.log("Adding listener to cardCodeInput");
       cardCodeInput.addEventListener("keydown", handleEnterKey);
     }
     if (nameInput) {
-      console.log("Adding listener to nameInput");
       nameInput.addEventListener("keydown", handleEnterKey);
     }
     if (emailInput) {
-      console.log("Adding listener to emailInput");
       emailInput.addEventListener("keydown", handleEnterKey);
     }
 
     return () => {
-      console.log("Cleanup running");
       if (cardCodeInput) cardCodeInput.removeEventListener("keydown", handleEnterKey);
       if (nameInput) nameInput.removeEventListener("keydown", handleEnterKey);
       if (emailInput) emailInput.removeEventListener("keydown", handleEnterKey);
