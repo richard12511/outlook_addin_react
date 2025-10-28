@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { makeStyles, Button, Input, Label, Card, Text, tokens } from "@fluentui/react-components";
 
 export interface FindBpCardProps {
@@ -13,6 +13,16 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
 
+  console.log("Component rendering"); // Add this at the top
+
+  const cardCodeRef = useRef<HTMLDivElement>(null);
+  const nameRef = useRef<HTMLDivElement>(null);
+  const emailRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    console.log("=== useEffect is running ===");
+  }, []);
+
   const handleFindClicked = () => {
     console.log("Find clicked with:", { cardCode, name, email });
     onFind(cardCode, name, email);
@@ -22,14 +32,62 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
     onBrowse(cardCode, name, email);
   };
 
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log("Form submitted!");
+    e.preventDefault();
+    handleFindClicked();
+  };
+
+  // Add native keydown listener to each input
+  useEffect(() => {
+    console.log("useEffect running");
+    const handleEnterKey = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        console.log("Enter pressed!");
+        e.preventDefault();
+        handleFindClicked();
+      }
+    };
+
+    // Get the actual input elements inside Fluent UI components
+    const cardCodeInput = cardCodeRef.current?.querySelector("input");
+    const nameInput = nameRef.current?.querySelector("input");
+    const emailInput = emailRef.current?.querySelector("input");
+
+    console.log("cardCodeRef.current:", cardCodeRef.current);
+    console.log("cardCodeInput:", cardCodeInput);
+    console.log("nameInput:", nameInput);
+    console.log("emailInput:", emailInput);
+
+    if (cardCodeInput) {
+      console.log("Adding listener to cardCodeInput");
+      cardCodeInput.addEventListener("keydown", handleEnterKey);
+    }
+    if (nameInput) {
+      console.log("Adding listener to nameInput");
+      nameInput.addEventListener("keydown", handleEnterKey);
+    }
+    if (emailInput) {
+      console.log("Adding listener to emailInput");
+      emailInput.addEventListener("keydown", handleEnterKey);
+    }
+
+    return () => {
+      console.log("Cleanup running");
+      if (cardCodeInput) cardCodeInput.removeEventListener("keydown", handleEnterKey);
+      if (nameInput) nameInput.removeEventListener("keydown", handleEnterKey);
+      if (emailInput) emailInput.removeEventListener("keydown", handleEnterKey);
+    };
+  }, [cardCode, name, email]); // Re-attach when values change
+
   return (
     <Card className={styles.bpCard}>
       <Text weight="semibold" size={300}>
-        Find Business Partner
+        Find Business Partner TEST
       </Text>
 
-      <div className={styles.cardContent}>
-        <div className={styles.inputGroup}>
+      <form className={styles.cardContent} onSubmit={handleFormSubmit}>
+        <div className={styles.inputGroup} ref={cardCodeRef}>
           <Label htmlFor="card-code-input" size="small">
             CardCode:
           </Label>
@@ -37,12 +95,13 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
             id="card-code-input"
             value={cardCode}
             onChange={(e) => setCardCode(e.target.value)}
+            // onKeyUpCapture={handleKeyPress}
             placeholder="Enter CardCode"
             size="small"
           />
         </div>
 
-        <div className={styles.inputGroup}>
+        <div className={styles.inputGroup} ref={nameRef}>
           <Label htmlFor="name-input" size="small">
             Name:
           </Label>
@@ -50,12 +109,13 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
             id="name-input"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            // onKeyDown={handleKeyDown}
             placeholder="Enter Name"
             size="small"
           />
         </div>
 
-        <div className={styles.inputGroup}>
+        <div className={styles.inputGroup} ref={emailRef}>
           <Label htmlFor="email-input" size="small">
             Email:
           </Label>
@@ -63,21 +123,22 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
             id="email-input"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            // onKeyDown={handleKeyDown}
             placeholder="Enter Email"
             size="small"
           />
         </div>
 
         <div className={styles.cardButtonGroup}>
-          <Button appearance="outline" size="small" onClick={handleFindClicked}>
+          <Button appearance="outline" size="small" type="submit" onClick={handleFindClicked}>
             Find
           </Button>
 
-          <Button appearance="outline" size="small" onClick={handleBrowseClicked}>
+          <Button appearance="outline" size="small" type="button" onClick={handleBrowseClicked}>
             Browse
           </Button>
         </div>
-      </div>
+      </form>
     </Card>
   );
 };

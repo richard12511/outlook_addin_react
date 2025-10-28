@@ -65,6 +65,7 @@ const categoryOptions = [
 ];
 
 const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
+  console.log("APP COMPONENT RENDERING");
   const styles = useStyles();
   const [subject, setSubject] = useState<string>("");
   const [selectedCategory, setSeclectedCategory] = useState<string>("");

@@ -73,6 +73,7 @@ module.exports = async (env, options) => {
       'process.env.API_USERNAME': JSON.stringify(process.env.API_USERNAME),
       'process.env.API_PASSWORD': JSON.stringify(process.env.API_PASSWORD),
       'process.env.API_BASE_URL': JSON.stringify(process.env.API_BASE_URL),
+      'process.env.API_BACKUP_URL': JSON.stringify(process.env.API_BACKUP_URL),
       }),
       new HtmlWebpackPlugin({
         filename: "taskpane.html",

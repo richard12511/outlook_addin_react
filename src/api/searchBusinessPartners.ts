@@ -24,23 +24,9 @@ export const searchBusinessPartners = async (
   const url = `${API_BASE_URL}/OutlookAddin/SearchBps?${params.toString()}`;
   const backupUrl = `${API_BACKUP_URL}/OutlookAddin/SearchBps?${params.toString()}`;
 
-  // const response = await fetch(url, {
-  //   method: "GET",
-  //   headers: {
-  //     Authorization: `Basic ${credentials}`,
-  //     "Content-Type": "application/json",
-  //   },
-  // });
   let response = await tryGET(url, credentials);
 
   if (!response.ok) {
-    // const retry = await fetch(backupUrl, {
-    //   method: "GET",
-    //   headers: {
-    //     Authorization: `Basic ${credentials}`,
-    //     "Content-Type": "application/json",
-    //   },
-    // });
     response = await tryGET(backupUrl, credentials);
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
