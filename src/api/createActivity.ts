@@ -5,17 +5,6 @@ import { API_BASE_URL, API_BACKUP_URL, PASSWORD, USERNAME } from "./apiConstants
 export const createActivity = async (
   activity: OutlookActivity
 ): Promise<CreateActivityResponse> => {
-  // const tryPOST = async (url: string) => {
-  //   return fetch(url, {
-  //     method: "POST",
-  //     headers: {
-  //       Authorization: `Basic ${credentials}`,
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(activity),
-  //   });
-  // };
-
   const credentials = btoa(`${USERNAME}:${PASSWORD}`);
   const url = `${API_BASE_URL}/OutlookAddin/CreateActivity`;
   const backupUrl = `${API_BACKUP_URL}/OutlookAddin/CreateActivity`;
