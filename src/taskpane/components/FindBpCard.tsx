@@ -67,7 +67,7 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
   return (
     <Card className={styles.bpCard}>
       <Text weight="semibold" size={300}>
-        Find Business Partner TEST
+        Find Business Partner
       </Text>
 
       <form className={styles.cardContent} onSubmit={handleFormSubmit}>
@@ -80,7 +80,7 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
             value={cardCode}
             onChange={(e) => setCardCode(e.target.value)}
             // onKeyUpCapture={handleKeyPress}
-            placeholder="Enter CardCode"
+            placeholder="Search by CardCode"
             size="small"
           />
         </div>
@@ -94,7 +94,7 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
             value={name}
             onChange={(e) => setName(e.target.value)}
             // onKeyDown={handleKeyDown}
-            placeholder="Enter Name"
+            placeholder="Search by CardName"
             size="small"
           />
         </div>
@@ -108,7 +108,7 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             // onKeyDown={handleKeyDown}
-            placeholder="Enter Email"
+            placeholder="Search by Email"
             size="small"
           />
         </div>

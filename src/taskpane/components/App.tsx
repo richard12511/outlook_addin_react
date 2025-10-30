@@ -28,6 +28,7 @@ import { processAttachments } from "../../util/attachmentProcessor";
 import ProjectModal from "./ProjectModal";
 import { getBpForProject } from "../../api/getBpForProject";
 import { searchProjects } from "../../api/searchProjects";
+import { extractInvoiceNumber } from "../../util/invoiceUtils";
 
 export interface AppProps {
   title: string;
@@ -73,6 +74,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   const [didAttachmentUpload, setDidAttachmentUpload] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("");
   const [messageType, setMessageType] = useState<"info" | "success" | "warning" | "error">("info");
+  const [detectedInvoice, setDetectedInvoice] = useState<number | null>(null);
 
   //Results Modal
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -424,6 +426,11 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
     }
   }, [isOfficeInitialized]);
 
+  useEffect(() => {
+    const invoiceNum = extractInvoiceNumber(subject);
+    setDetectedInvoice(invoiceNum);
+  }, [subject]);
+
   const loadEmailSubject = async () => {
     try {
       const item = Office.context.mailbox.item;
@@ -513,6 +520,13 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
             />
           )}
         </div>
+
+        {/* Show invoice detection indicator */}
+        {detectedInvoice && (
+          <div className={styles.invoiceDetected}>
+            ℹ️ Invoice {detectedInvoice} detected - will be linked to activity
+          </div>
+        )}
 
         {/*Mail Type Dropdown */}
         <div className={styles.inputGroup}>
@@ -609,6 +623,14 @@ const useStyles = makeStyles({
     // marginTop: "auto",
     marginTop: tokens.spacingVerticalXS,
     paddingTop: tokens.spacingVerticalXS,
+  },
+  invoiceDetected: {
+    fontSize: "12px",
+    color: tokens.colorBrandForeground1,
+    padding: `${tokens.spacingVerticalXXS} ${tokens.spacingHorizontalS}`,
+    backgroundColor: tokens.colorNeutralBackground3,
+    borderRadius: tokens.borderRadiusSmall,
+    marginTop: tokens.spacingVerticalXXS,
   },
 });
 
