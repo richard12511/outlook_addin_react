@@ -1,4 +1,5 @@
 import { FollowUpData, AttachmentsData, OutlookActivity } from "../types";
+import { extractInvoiceNumber, shouldLinkInvoice } from "./invoiceUtils";
 
 const ACTIVITY_TYPE_MAP: Record<string, number> = {
   conversation: 1,
@@ -72,6 +73,12 @@ export const buildOutlookActivity = (
       )
     : followUpData.dueDate;
 
+  //Check if subject contains an invoice pattern
+  const invoiceNum = extractInvoiceNumber(subject);
+  const linkInvoice = shouldLinkInvoice(subject);
+
+  console.log("inside buildActivity inside activityUtils.ts, invoiceNum = ", invoiceNum);
+
   return {
     CardCode: selectedBP.cardCode,
     Subject: subject,
@@ -92,5 +99,7 @@ export const buildOutlookActivity = (
     ReminderType: REMINDER_TYPE_MAP[followUpData.reminderUnit] || "M",
     ReminderQuantity: parseInt(followUpData.reminderValue) || 15,
     OutlookUser: outlookUser || "",
+    ShouldLinkInvoice: linkInvoice,
+    InvoiceNumber: invoiceNum || undefined,
   };
 };
