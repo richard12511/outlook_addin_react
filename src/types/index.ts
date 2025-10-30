@@ -46,6 +46,8 @@ export interface OutlookActivity {
   ReminderType: string; // "M" for Minutes, "H" for Hours, "D" for Days
   ReminderQuantity: number;
   OutlookUser?: string;
+  ShouldLinkInvoice?: boolean;
+  InvoiceNumber?: number;
 }
 
 export interface CreateActivityResponse {
