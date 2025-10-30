@@ -12,6 +12,7 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
   const [cardCode, setCardCode] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
+  const [isFocused, setIsFocused] = useState<boolean>(false);
   const cardCodeRef = useRef<HTMLDivElement>(null);
   const nameRef = useRef<HTMLDivElement>(null);
   const emailRef = useRef<HTMLDivElement>(null);
@@ -24,6 +25,44 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
   const handleBrowseClicked = () => {
     onBrowse(cardCode, name, email);
   };
+
+  //This useEffect is for changing the color of the "Find" button based on user focus
+  useEffect(() => {
+    const handleFocus = () => setIsFocused(true);
+    const handleBlur = () => setIsFocused(false);
+
+    const cardCodeInput = cardCodeRef.current?.querySelector("input");
+    const nameInput = cardCodeRef.current?.querySelector("input");
+    const emailInput = emailRef.current?.querySelector("input");
+
+    if (cardCodeInput) {
+      cardCodeInput.addEventListener("focus", handleFocus);
+      cardCodeInput.addEventListener("blur", handleBlur);
+    }
+    if (nameInput) {
+      nameInput.addEventListener("focus", handleFocus);
+      nameInput.addEventListener("blur", handleBlur);
+    }
+    if (emailInput) {
+      emailInput.addEventListener("focus", handleFocus);
+      emailInput.addEventListener("blur", handleBlur);
+    }
+
+    return () => {
+      if (cardCodeInput) {
+        cardCodeInput.removeEventListener("focus", handleFocus);
+        cardCodeInput.removeEventListener("blur", handleBlur);
+      }
+      if (nameInput) {
+        nameInput.removeEventListener("focus", handleFocus);
+        nameInput.removeEventListener("blur", handleBlur);
+      }
+      if (emailInput) {
+        emailInput.removeEventListener("focus", handleFocus);
+        emailInput.removeEventListener("blur", handleBlur);
+      }
+    };
+  }, []);
 
   const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     console.log("Form submitted!");
@@ -114,7 +153,12 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
         </div>
 
         <div className={styles.cardButtonGroup}>
-          <Button appearance="outline" size="small" type="submit" onClick={handleFindClicked}>
+          <Button
+            appearance={isFocused ? "primary" : "outline"}
+            size="small"
+            type="submit"
+            onClick={handleFindClicked}
+          >
             Find
           </Button>
 

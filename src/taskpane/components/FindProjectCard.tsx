@@ -14,6 +14,7 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
   const [projectName, setProjectName] = useState<string>("");
   const [projectPath, setProjectPath] = useState<string>("");
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isFocused, setIsFocused] = useState<boolean>(false);
 
   const handleFindClicked = () => {
     console.log("Find clicked with: ", projectCode);
@@ -44,6 +45,8 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
             value={projectCode}
             onChange={(e) => setProjectCode(e.target.value)}
             onKeyDown={handleKeyDown}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             placeholder="Search by project code, ex: '15876'"
             size="small"
             // disabled={disabled}
@@ -70,6 +73,8 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
                 onKeyDown={handleKeyDown}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
                 placeholder="Search by project name, ex: '2025'"
                 // disabled={disabled}
               />
@@ -82,6 +87,8 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
                 value={projectPath}
                 onChange={(e) => setProjectPath(e.target.value)}
                 onKeyDown={handleKeyDown}
+                onFocus={() => setIsFocused(true)}
+                onBlur={() => setIsFocused(false)}
                 placeholder="Search by project path, ex: 'Training->Training Events'"
                 // disabled={disabled}
               />
@@ -90,7 +97,11 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
         )}
 
         <div className={styles.cardButtonGroup}>
-          <Button appearance="outline" size="small" onClick={handleFindClicked}>
+          <Button
+            appearance={isFocused ? "primary" : "outline"}
+            size="small"
+            onClick={handleFindClicked}
+          >
             Find
           </Button>
         </div>
