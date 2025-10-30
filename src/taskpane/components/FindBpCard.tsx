@@ -32,7 +32,7 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
     const handleBlur = () => setIsFocused(false);
 
     const cardCodeInput = cardCodeRef.current?.querySelector("input");
-    const nameInput = cardCodeRef.current?.querySelector("input");
+    const nameInput = nameRef.current?.querySelector("input");
     const emailInput = emailRef.current?.querySelector("input");
 
     if (cardCodeInput) {
