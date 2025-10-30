@@ -563,7 +563,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
         />
 
         <div className={styles.buttonGroup}>
-          <Button appearance="primary" onClick={handleSave} disabled={isSaving}>
+          <Button appearance="primary" onClick={handleSave} disabled={isSaving || !selectedBP}>
             Save
           </Button>
           <Button appearance="secondary" onClick={handleCancel} disabled={isSaving}>
