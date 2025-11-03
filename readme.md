@@ -163,20 +163,6 @@ After deployment, users may need to clear their Office add-in cache:
 6. Click **OK** to install
 Follow the steps in [Development Setup - Step 6](#6-sideload-the-add-in-in-outlook).
 
-### For Organization-Wide Deployment
-
-**Via Microsoft 365 Admin Center (Recommended):**
-1. Go to the [Microsoft 365 Admin Center](https://admin.microsoft.com)
-2. Navigate to **Settings → Integrated apps**
-3. Click **Upload custom apps**
-4. Upload the `manifest.xml` file
-5. Assign to specific users or the entire organization
-6. The add-in will appear automatically for assigned users
-
-**Via Centralized Deployment:**
-- Work with your IT administrator to deploy via Exchange Admin Center
-- The add-in will be automatically available in Outlook for all users
-
 ## Project Structure
 ```
 save_email_addin/
