@@ -159,9 +159,8 @@ After deployment, users may need to clear their Office add-in cache:
 2. Go to **File → Manage Add-ins** (this will open the web version of outlook)
 3. Click **My add-ins**
 4. Under **Custom Add-ins**, click **Add a custom add-in → Add from File**
-5. Browse to your `manifest.xml` file and select it
+5. Browse to your `manifest.xml`  file and select it (`\\files\SWShelf\SAPOutlookAddon\New Outlook Addin` if you need a copy)
 6. Click **OK** to install
-Follow the steps in [Development Setup - Step 6](#6-sideload-the-add-in-in-outlook).
 
 ## Project Structure
 ```
