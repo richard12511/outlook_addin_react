@@ -60,3 +60,75 @@ export const getEmailMsgContent = async (): Promise<ArrayBuffer> => {
     });
   });
 };
+
+export interface EmailRecipient {
+  displayName: string;
+  emailAddress: string;
+}
+
+export const extractEmailAddresses = async (): Promise<EmailRecipient[]> => {
+  const emails: EmailRecipient[] = [];
+  const seen = new Set<string>();
+
+  try {
+    const item = Office.context.mailbox.item;
+    if (!item) return emails;
+
+    //Get From address
+    if (item.from) {
+      const from = await getEmailAddress(item.from);
+      if (from && !seen.has(from.emailAddress)) {
+        seen.add(from.emailAddress);
+        emails.push(from);
+      }
+    }
+
+    // Get To addresses
+    if (item.to) {
+      const toAddresses = await getEmailAddresses(item.to);
+      toAddresses.forEach((addr) => {
+        if (!seen.has(addr.emailAddress)) {
+          seen.add(addr.emailAddress);
+          emails.push(addr);
+        }
+      });
+    }
+
+    // Get CC addresses
+    if (item.cc) {
+      const ccAddresses = await getEmailAddresses(item.cc);
+      ccAddresses.forEach((addr) => {
+        if (!seen.has(addr.emailAddress)) {
+          seen.add(addr.emailAddress);
+          emails.push(addr);
+        }
+      });
+    }
+  } catch (error) {
+    console.error("Error extracting email addresses: ", error);
+  }
+
+  return emails;
+};
+
+const getEmailAddress = (recipient: Office.EmailAddressDetails): Promise<EmailRecipient> => {
+  return new Promise((resolve) => {
+    resolve({
+      displayName: recipient.displayName || recipient.emailAddress.toLowerCase(),
+      emailAddress: recipient.emailAddress.toLowerCase(),
+    });
+  });
+};
+
+/**
+ * Get multiple email addresses (for To/CC fields)
+ */
+const getEmailAddresses = (recipients: Office.EmailAddressDetails[]): Promise<EmailRecipient[]> => {
+  return new Promise((resolve) => {
+    const addresses = recipients.map((r) => ({
+      displayName: r.displayName || r.emailAddress.toLowerCase(),
+      emailAddress: r.emailAddress.toLowerCase(),
+    }));
+    resolve(addresses);
+  });
+};

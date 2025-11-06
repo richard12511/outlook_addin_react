@@ -30,6 +30,7 @@ import { getBpForProject } from "../../api/getBpForProject";
 import { searchProjects } from "../../api/searchProjects";
 import { extractInvoiceNumber } from "../../util/invoiceUtils";
 import { removeParentheses } from "../../util/stringUtils";
+import { EmailRecipient, extractEmailAddresses } from "../../util/emailUtils";
 
 export interface AppProps {
   title: string;
@@ -76,6 +77,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   const [message, setMessage] = useState<string>("");
   const [messageType, setMessageType] = useState<"info" | "success" | "warning" | "error">("info");
   const [detectedInvoice, setDetectedInvoice] = useState<number | null>(null);
+  const [emailOptions, setEmailOptions] = useState<EmailRecipient[]>([]);
 
   //Results Modal
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -433,6 +435,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   useEffect(() => {
     if (isOfficeInitialized) {
       loadEmailSubject();
+      loadEmailAddresses();
     }
   }, [isOfficeInitialized]);
 
@@ -482,6 +485,15 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       console.error("Error loading email subject:", error);
       setSeclectedCategory("-1");
       setIsLoading(false);
+    }
+  };
+
+  const loadEmailAddresses = async () => {
+    try {
+      const addresses = await extractEmailAddresses();
+      setEmailOptions(addresses);
+    } catch (error) {
+      console.log("Error loading email addresses: ", error);
     }
   };
 
@@ -577,6 +589,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           onFollowUpChange={handleFollowUpDataChanged}
           attachmentsData={attachmentsData}
           onAttachmentsChange={handleAttachmentsDataChanged}
+          emailOptions={emailOptions}
           disabled={isSaving}
         />
 

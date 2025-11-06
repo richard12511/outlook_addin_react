@@ -6,6 +6,7 @@ import FindProjectCard from "./FindProjectCard";
 import FollowUpCard from "./FollowUpCard";
 import AttachmentsCard from "./AttachmentsCard";
 import { AttachmentsData, FollowUpData } from "../../types";
+import { EmailRecipient } from "../../util/emailUtils";
 
 export interface TabsProps {
   onFindClick: (cardCode: string, name: string, email: string) => void;
@@ -27,6 +28,7 @@ export interface TabsProps {
   onFollowUpChange: (data: FollowUpData) => void;
   attachmentsData: AttachmentsData;
   onAttachmentsChange: (data: AttachmentsData) => void;
+  emailOptions: EmailRecipient[];
   disabled?: boolean;
 }
 
@@ -42,6 +44,7 @@ const Tabs: React.FC<TabsProps> = ({
   attachmentsData,
   onAttachmentsChange,
   disabled,
+  emailOptions,
 }) => {
   const styles = useStyles();
 
@@ -70,7 +73,7 @@ const Tabs: React.FC<TabsProps> = ({
       <div className={styles.tabContent}>
         {activeTab === "search" && (
           <div>
-            <FindBpCard onFind={onFindClick} onBrowse={onBrowse} />
+            <FindBpCard onFind={onFindClick} onBrowse={onBrowse} emailOptions={emailOptions} />
             <FindProjectCard onFind={onProjectFindClick} />
           </div>
         )}

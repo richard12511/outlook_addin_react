@@ -1,13 +1,29 @@
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
-import { makeStyles, Button, Input, Label, Card, Text, tokens } from "@fluentui/react-components";
+import {
+  makeStyles,
+  Button,
+  Input,
+  Label,
+  Card,
+  Text,
+  tokens,
+  Combobox,
+  Option,
+} from "@fluentui/react-components";
+import { EmailRecipient } from "../../util/emailUtils";
 
 export interface FindBpCardProps {
   onFind: (cardCode: string, name: string, email: string) => void;
   onBrowse: (cardCode: string, name: string, email: string) => void;
+  emailOptions: EmailRecipient[];
 }
 
-const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardProps) => {
+const FindBpCard: React.FC<FindBpCardProps> = ({
+  onFind,
+  onBrowse,
+  emailOptions,
+}: FindBpCardProps) => {
   const styles = useStyles();
   const [cardCode, setCardCode] = useState<string>("");
   const [name, setName] = useState<string>("");
@@ -24,6 +40,17 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
 
   const handleBrowseClicked = () => {
     onBrowse(cardCode, name, email);
+  };
+
+  const handleEmailSelect = (_event: any, data: any) => {
+    console.log("Inside handleEmailSelect");
+    const selectedEmail = data.optionValue;
+    if (selectedEmail) {
+      setEmail(selectedEmail);
+      setTimeout(() => {
+        onFind(cardCode, name, selectedEmail);
+      }, 100);
+    }
   };
 
   //This useEffect is for changing the color of the "Find" button based on user focus
@@ -142,14 +169,25 @@ const FindBpCard: React.FC<FindBpCardProps> = ({ onFind, onBrowse }: FindBpCardP
           <Label htmlFor="email-input" size="small">
             Email:
           </Label>
-          <Input
+          <Combobox
             id="email-input"
+            placeholder="Type or select an email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            // onKeyDown={handleKeyDown}
-            placeholder="Search by Email"
+            onInput={(e) => setEmail(e.currentTarget.value)}
+            onOptionSelect={handleEmailSelect}
             size="small"
-          />
+            freeform // Allows typing custom values
+          >
+            {emailOptions.map((recipient, _index) => (
+              <Option
+                key={recipient.emailAddress}
+                value={recipient.emailAddress}
+                text={recipient.emailAddress}
+              >
+                {recipient.displayName} ({recipient.emailAddress})
+              </Option>
+            ))}
+          </Combobox>
         </div>
 
         <div className={styles.cardButtonGroup}>
