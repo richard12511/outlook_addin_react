@@ -53,4 +53,6 @@ export interface OutlookActivity {
 export interface CreateActivityResponse {
   didSave: boolean;
   didFollowUpSave: boolean;
+  error: string;
+  clgCode: number;
 }

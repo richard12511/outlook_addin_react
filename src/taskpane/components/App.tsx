@@ -172,7 +172,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           if (item.body.getAsync) {
             //This is async, so just testing weith placeholder for now
             emailBody = await new Promise<string>((resolve, reject) => {
-              item.body.getAsync(Office.CoercionType.Html, (result) => {
+              item.body.getAsync(Office.CoercionType.Text, (result) => {
                 if (result.status === Office.AsyncResultStatus.Succeeded) {
                   resolve(result.value || "");
                 } else {
@@ -185,6 +185,8 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       } catch (error) {
         console.log("Could not extract email body: ", error);
       }
+
+      console.log("SelectedCategory: ", selectedCategory);
 
       //Build the activity data object
       const activityData = buildOutlookActivity(
@@ -206,7 +208,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       console.log("Save result: ", result);
 
       if (result.didSave) {
-        let successMessage = "Email activity saved successfully!";
+        let successMessage = "Email activity saved successfully! \nClgCode: " + result.clgCode;
 
         if (followUpData.createFollowUp && result.didFollowUpSave) {
           successMessage += " Follow-up activity also created.";
@@ -216,11 +218,16 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
 
         setMessage(successMessage);
         setMessageType("success");
-
-        // Optionally reset form or close add-in
-        // resetForm();
+        setTimeout(() => {
+          if (Office.context.ui) {
+            Office.context.ui.closeContainer();
+          } else {
+            window.close();
+          }
+        }, 4000);
       } else {
-        setMessage("Failed to save email activity. Please contact a system admin.");
+        var message = "Failed to save activity: " + result.error;
+        setMessage(message);
         setMessageType("error");
       }
     } catch (error) {
@@ -230,7 +237,9 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       setMessageType("error");
     } finally {
       setIsSaving(false);
-      setTimeout(() => setMessage(""), 30000); // Clear message after 10 seconds
+      setTimeout(() => {
+        setMessage("");
+      }, 5000);
     }
   };
 
