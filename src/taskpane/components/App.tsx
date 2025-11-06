@@ -29,6 +29,7 @@ import ProjectModal from "./ProjectModal";
 import { getBpForProject } from "../../api/getBpForProject";
 import { searchProjects } from "../../api/searchProjects";
 import { extractInvoiceNumber } from "../../util/invoiceUtils";
+import { removeParentheses } from "../../util/stringUtils";
 
 export interface AppProps {
   title: string;
@@ -454,7 +455,11 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
 
           item.subject.getAsync((result) => {
             if (result.status === Office.AsyncResultStatus.Succeeded) {
-              setSubject(result.value || "");
+              const rawSubject = result.value || "";
+              const cleanedSubject = removeParentheses(rawSubject);
+              console.log("Raw subject: ", rawSubject);
+              console.log("Cleaned subject: ", cleanedSubject);
+              setSubject(cleanedSubject);
             }
             setIsLoading(false);
           });
@@ -462,7 +467,11 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
           // Reading a received email
           setSeclectedCategory("2"); // Received E-mail
 
-          setSubject(item.subject || "");
+          const rawSubject = item.subject || "";
+          const cleanedSubject = removeParentheses(rawSubject);
+          console.log("Raw subject: ", rawSubject);
+          console.log("Cleaned subject: ", cleanedSubject);
+          setSubject(cleanedSubject);
           setIsLoading(false);
         }
       } else {
