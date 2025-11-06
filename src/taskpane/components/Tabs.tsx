@@ -61,7 +61,7 @@ const Tabs: React.FC<TabsProps> = ({
       >
         <Tab value="search">Search</Tab>
         <Tab value="selected" disabled={!selectedBP}>
-          Selected BP
+          BP
         </Tab>
         <Tab value="followup">Follow-Up</Tab>
         <Tab value="attachments">Attachments</Tab>
