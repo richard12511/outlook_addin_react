@@ -20,12 +20,16 @@ export const processAttachments = async (
 
     if (saveEmailAttachments) {
       const attachments = await getEmailAttachments();
+      console.log("Saving email attachments, attachments: ", attachments);
 
       for (const attachment of attachments) {
+        console.log("Processing attachment: ", attachment);
         const uniqueId = generateUniqueId();
         const attachmentContent = await getAttachmentContent(attachment.id);
+        console.log("attachmentContent: ", attachmentContent);
 
         const uploadedFile = await uploadFile(attachmentContent, attachment.name, uniqueId);
+        console.log("File uploaded, uploadedFile: ", uploadedFile);
         uploadedPaths.push(uploadedFile.fullPath);
       }
     }

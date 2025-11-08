@@ -47,6 +47,7 @@ export const uploadFile = async (
   }
 
   const result = await response.json();
+  console.log("Result of /OutlookAddin/UploadAttachment: ", result);
   const actualFilename = result.cleanedFilename || uniqueFilename;
 
   return {
