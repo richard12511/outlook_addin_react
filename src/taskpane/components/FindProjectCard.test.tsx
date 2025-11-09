@@ -28,4 +28,14 @@ describe("FindProjectCard", () => {
     expect(screen.getByLabelText(/Project Name/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Project Path/i)).toBeInTheDocument();
   });
+
+  it("calls onFind with entered values when Find button is clicked", async () => {
+    const user = userEvent.setup();
+    render(<FindProjectCard onFind={mockOnFind} />);
+
+    await user.type(screen.getByLabelText(/project code/i), "15876");
+    await user.click(screen.getByRole("button", { name: /find/i }));
+
+    expect(mockOnFind).toHaveBeenCalledWith("15876", "", "");
+  });
 });
