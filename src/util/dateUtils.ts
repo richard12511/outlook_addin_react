@@ -16,8 +16,23 @@ export const getDefaultDate = (): string => {
 
 //Convert time string (HH:MM) to integer(HHMM)
 export const timeStringToInteger = (timeString: string): number => {
-  const [hours, minutes] = timeString.split(":");
-  return parseInt(hours) * 100 + parseInt(minutes);
+  if (!timeString || typeof timeString !== "string") {
+    return 0; //default to midnight
+  }
+
+  const parts = timeString.split(":");
+  if (parts.length != 2) {
+    return 0;
+  }
+
+  const hours = parseInt(parts[0]);
+  const minutes = parseInt(parts[1]);
+
+  if (isNaN(hours) || isNaN(minutes)) {
+    return 0;
+  }
+
+  return hours * 100 + minutes;
 };
 
 //Calculate reminder date based on due date, reminder quanitty, and type
