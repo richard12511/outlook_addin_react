@@ -1,4 +1,5 @@
 import { FollowUpData, AttachmentsData, OutlookActivity } from "../types";
+import { calculateReminderDate, timeStringToInteger } from "./dateUtils";
 import { extractInvoiceNumber, shouldLinkInvoice } from "./invoiceUtils";
 
 const ACTIVITY_TYPE_MAP: Record<string, number> = {
@@ -13,36 +14,6 @@ const REMINDER_TYPE_MAP: Record<string, string> = {
   minutes: "M",
   hours: "H",
   days: "D",
-};
-
-//Convert time string (HH:MM) to integer(HHMM)
-export const timeStringToInteger = (timeString: string): number => {
-  const [hours, minutes] = timeString.split(":");
-  return parseInt(hours) * 100 + parseInt(minutes);
-};
-
-//Calculate reminder date based on due date, reminder quanitty, and type
-export const calculateReminderDate = (
-  dueDate: string,
-  reminderQuantity: number,
-  reminderType: string
-): string => {
-  const due = new Date(dueDate);
-
-  switch (reminderType.toLowerCase()) {
-    case "minutes":
-      due.setMinutes(due.getMinutes() - reminderQuantity);
-      break;
-    case "hours":
-      due.setHours(due.getHours() - reminderQuantity);
-      break;
-    case "days":
-      due.setDate(due.getDate() - reminderQuantity);
-      break;
-  }
-
-  const dateStr = due.toISOString().split("T")[0];
-  return dateStr;
 };
 
 // Build OutlookActivity object from form data

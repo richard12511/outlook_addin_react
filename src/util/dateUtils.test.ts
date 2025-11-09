@@ -1,4 +1,4 @@
-import { calculateReminderDate, timeStringToInteger } from "./activityUtils";
+import { calculateReminderDate, timeStringToInteger } from "./dateUtils";
 
 describe("timeStringToInteger", () => {
   it("converts time string to an integer", () => {
