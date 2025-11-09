@@ -58,10 +58,8 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
           icon={isExpanded ? <ChevronUp20Regular /> : <ChevronDown20Regular />}
           onClick={() => setIsExpanded(!isExpanded)}
           className={styles.expandButton}
-          // disabled={disabled}
-        >
-          {/* {isExpanded ? "Hide" : "Show"} additional filters */}
-        </Button>
+          aria-label={isExpanded ? "Collapse" : "Expand"}
+        ></Button>
 
         {/* Collapsable Section */}
         {isExpanded && (
