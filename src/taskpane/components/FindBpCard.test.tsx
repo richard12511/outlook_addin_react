@@ -65,4 +65,29 @@ describe("FindBpCard", () => {
 
     expect(mockOnFind).toHaveBeenCalledWith("", "ACME", "");
   });
+
+  describe("Find button appearance based on focus", () => {
+    it("has outline appearance by default", () => {
+      render(
+        <FindBpCard onFind={mockOnFind} onBrowse={mockOnBrowse} emailOptions={mockEmailOptions} />
+      );
+
+      const findButton = screen.getByRole("button", { name: /find/i });
+      expect(findButton).toHaveAttribute("data-appearance", "outline");
+    });
+
+    it("changes to primary appearance when input is focused", async () => {
+      const user = userEvent.setup();
+      render(
+        <FindBpCard onFind={mockOnFind} onBrowse={mockOnBrowse} emailOptions={mockEmailOptions} />
+      );
+
+      const codeInput = screen.getByLabelText(/cardcode/i);
+      const findButton = screen.getByRole("button", { name: /find/i });
+
+      await user.click(codeInput);
+
+      expect(findButton).toHaveAttribute("data-appearance", "primary");
+    });
+  });
 });

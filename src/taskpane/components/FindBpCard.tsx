@@ -196,6 +196,7 @@ const FindBpCard: React.FC<FindBpCardProps> = ({
             size="small"
             type="submit"
             onClick={handleFindClicked}
+            data-appearance={isFocused ? "primary" : "outline"}
           >
             Find
           </Button>

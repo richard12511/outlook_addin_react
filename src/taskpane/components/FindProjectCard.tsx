@@ -99,6 +99,7 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
             appearance={isFocused ? "primary" : "outline"}
             size="small"
             onClick={handleFindClicked}
+            data-appearance={isFocused ? "primary" : "outline"}
           >
             Find
           </Button>

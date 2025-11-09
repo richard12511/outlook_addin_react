@@ -38,4 +38,25 @@ describe("FindProjectCard", () => {
 
     expect(mockOnFind).toHaveBeenCalledWith("15876", "", "");
   });
+
+  describe("Find button appearance based on focus", () => {
+    it("has outline appearance by default", () => {
+      render(<FindProjectCard onFind={mockOnFind} />);
+
+      const findButton = screen.getByRole("button", { name: /find/i });
+      expect(findButton).toHaveAttribute("data-appearance", "outline");
+    });
+
+    it("changes to primary appearance when input is focused", async () => {
+      const user = userEvent.setup();
+      render(<FindProjectCard onFind={mockOnFind} />);
+
+      const codeInput = screen.getByLabelText(/project code/i);
+      const findButton = screen.getByRole("button", { name: /find/i });
+
+      await user.click(codeInput);
+
+      expect(findButton).toHaveAttribute("data-appearance", "primary");
+    });
+  });
 });
