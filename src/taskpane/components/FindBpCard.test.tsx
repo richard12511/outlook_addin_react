@@ -40,4 +40,29 @@ describe("FindBpCard", () => {
 
     expect(mockOnFind).toHaveBeenCalledWith("P49002", "Richard", "test@gmail.com");
   });
+
+  it("calls onBrowse when Browse button clicked", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <FindBpCard onFind={mockOnFind} onBrowse={mockOnBrowse} emailOptions={mockEmailOptions} />
+    );
+
+    await user.click(screen.getByRole("button", { name: /browse/i }));
+
+    expect(mockOnBrowse).toHaveBeenCalled();
+  });
+
+  it("allows searching with partial information", async () => {
+    const user = userEvent.setup();
+
+    render(
+      <FindBpCard onFind={mockOnFind} onBrowse={mockOnBrowse} emailOptions={mockEmailOptions} />
+    );
+
+    await user.type(screen.getByPlaceholderText("Search by CardName"), "ACME");
+    await user.click(screen.getByRole("button", { name: /find/i }));
+
+    expect(mockOnFind).toHaveBeenCalledWith("", "ACME", "");
+  });
 });
