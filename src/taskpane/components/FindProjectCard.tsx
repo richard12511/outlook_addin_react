@@ -22,7 +22,6 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    console.log("handleKeyDown, e.key: ", e.key);
     if (e.key === "Enter") {
       e.preventDefault();
       handleFindClicked();
@@ -49,7 +48,6 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
             onBlur={() => setIsFocused(false)}
             placeholder="Search by project code, ex: '15876'"
             size="small"
-            // disabled={disabled}
           />
         </div>
 
@@ -74,7 +72,6 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 placeholder="Search by project name, ex: '2025'"
-                // disabled={disabled}
               />
             </div>
 
@@ -88,7 +85,6 @@ const FindProjectCard: React.FC<FindProjectProps> = ({ onFind }: FindProjectProp
                 onFocus={() => setIsFocused(true)}
                 onBlur={() => setIsFocused(false)}
                 placeholder="Search by project path, ex: 'Training->Training Events'"
-                // disabled={disabled}
               />
             </div>
           </div>
