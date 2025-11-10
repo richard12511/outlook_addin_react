@@ -2,6 +2,8 @@ import { processAttachments } from "./attachmentProcessor";
 import { getEmailAttachments, getAttachmentContent, getEmailMsgContent } from "./emailUtils";
 import { uploadFile } from "../api/uploadAttachments";
 import { generateUniqueId } from "./fileUtils";
+import { mockOfficeContext } from "../test-utils/officeMocks";
+import { TextEncoder, TextDecoder } from "util";
 
 // jest.mock("./emailUtils");
 jest.mock("../api/uploadAttachments");
@@ -9,43 +11,65 @@ jest.mock("../api/uploadAttachments");
 
 const mockUploadFile = uploadFile as jest.MockedFunction<typeof uploadFile>;
 
-const mockOfficeContext = () => {
-  const mockItem = {
-    subject: "Test Subject",
-    body: {
-      getAsync: jest.fn((coercionType: any, callback: any) => {
-        callback({
-          status: Office.AsyncResultStatus.Succeeded,
-          value: "<html><body>Test email body</body></html>",
-        });
-      }),
-    },
-    attachments: [],
-    getAttachmentsAsync: jest.fn((callback: any) => {
-      callback({
-        status: Office.AsyncResultStatus.Succeeded,
-        value: [],
-      });
-    }),
-  };
+describe("processAttachments - Integration Tests", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockOfficeContext();
 
-  // @ts-ignore - Mocking Office global
-  //   (global.Office = {
-  //     context: {
-  //       mailbox: {
-  //         item: mockItem,
-  //       },
-  //     },
-  //     CoercionType: {
-  //       Text: "text",
-  //       Html: "html",
-  //     },
-  //     AsyncResultStatus: {
-  //       Succeeded: "succeeded",
-  //       Failed: "failed",
-  //     },
-  //   };
-};
+    mockUploadFile.mockResolvedValue({
+      originalName: "test.msg",
+      uniqueFilename: "unique_test.msg",
+      fullPath: "\\\\server\\share\\unique_test.msg",
+    });
+  });
+
+  it("uploads email message and returns path when saveEmailMessage is true", async () => {
+    const result = await processAttachments("Test Subject", true, false);
+
+    expect(result).toBeTruthy(); //make sure it returns something
+    expect(result).toContain("\\\\server\\share\\");
+    expect(result).toContain(".msg");
+  });
+});
+// const mockUploadFile = uploadFile as jest.MockedFunction<typeof uploadFile>;
+
+// const mockOfficeContext = () => {
+//   const mockItem = {
+//     subject: "Test Subject",
+//     body: {
+//       getAsync: jest.fn((coercionType: any, callback: any) => {
+//         callback({
+//           status: Office.AsyncResultStatus.Succeeded,
+//           value: "<html><body>Test email body</body></html>",
+//         });
+//       }),
+//     },
+//     attachments: [],
+//     getAttachmentsAsync: jest.fn((callback: any) => {
+//       callback({
+//         status: Office.AsyncResultStatus.Succeeded,
+//         value: [],
+//       });
+//     }),
+//   };
+
+// @ts-ignore - Mocking Office global
+//   (global.Office = {
+//     context: {
+//       mailbox: {
+//         item: mockItem,
+//       },
+//     },
+//     CoercionType: {
+//       Text: "text",
+//       Html: "html",
+//     },
+//     AsyncResultStatus: {
+//       Succeeded: "succeeded",
+//       Failed: "failed",
+//     },
+//   };
+// };
 
 // const mockGetEmailAttachments = getEmailAttachments as jest.MockedFunction<
 //   typeof getEmailAttachments
