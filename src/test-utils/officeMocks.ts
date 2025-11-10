@@ -41,6 +41,19 @@ export const mockOfficeContext = () => {
   return mockItem;
 };
 
+export const mockOfficeContextWithAttachments = (attachments: any[]) => {
+  const mockItem = mockOfficeContext();
+  mockItem.attachments = attachments;
+  mockItem.getAttachmentsAsync = jest.fn((callback: any) => {
+    callback({
+      status: "succeeded",
+      value: attachments,
+    });
+  });
+
+  return mockItem;
+};
+
 export const mockAttachmentContent = (attachmentId: string, content: string) => {
   const win = global as any;
   const mockItem = win.Office.context.mailbox.item;
