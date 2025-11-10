@@ -16,6 +16,7 @@ export const processAttachments = async (
 
       const uploadedMsg = await uploadFile(emailContent, `${subject}.msg`, uniqueId);
       uploadedPaths.push(uploadedMsg.fullPath);
+      console.log("uploadedPaths: ", uploadedPaths);
     }
 
     if (saveEmailAttachments) {
@@ -31,6 +32,7 @@ export const processAttachments = async (
         const uploadedFile = await uploadFile(attachmentContent, attachment.name, uniqueId);
         console.log("File uploaded, uploadedFile: ", uploadedFile);
         uploadedPaths.push(uploadedFile.fullPath);
+        console.log("uploadedPaths: ", uploadedPaths);
       }
     }
 

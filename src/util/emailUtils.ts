@@ -21,14 +21,18 @@ export const getAttachmentContent = async (attachmentId: string): Promise<ArrayB
     }
 
     item.getAttachmentContentAsync(attachmentId, (result) => {
+      console.log("inside getAttachmentContentAsync");
       if (result.status === Office.AsyncResultStatus.Succeeded) {
+        console.log("result.value.content: ", result.value.content);
         const base64String = result.value.content;
         const binaryString = atob(base64String);
+        console.log("binaryString: ", binaryString);
         const bytes = new Uint8Array(binaryString.length);
 
         for (let i = 0; i < binaryString.length; i++) {
           bytes[i] = binaryString.charCodeAt(i);
         }
+        console.log("after for loop");
 
         resolve(bytes.buffer);
       } else {
