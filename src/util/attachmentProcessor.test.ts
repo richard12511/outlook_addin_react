@@ -1,14 +1,10 @@
 import { processAttachments } from "./attachmentProcessor";
-import { getEmailAttachments, getAttachmentContent, getEmailMsgContent } from "./emailUtils";
 import { uploadFile } from "../api/uploadAttachments";
-import { generateUniqueId } from "./fileUtils";
 import {
   mockAttachmentContents,
   mockOfficeContext,
   mockOfficeContextWithAttachments,
 } from "../test-utils/officeMocks";
-import { TextEncoder, TextDecoder } from "util";
-import { time } from "console";
 
 jest.mock("../api/uploadAttachments");
 
