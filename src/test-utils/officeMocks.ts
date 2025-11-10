@@ -1,5 +1,4 @@
 import "@testing-library/jest-dom";
-import { TextEncoder, TextDecoder } from "util";
 
 export const mockOfficeContext = () => {
   const mockItem = {
@@ -62,14 +61,7 @@ export const mockAttachmentContents = (contentMap: Record<string, string>) => {
     const content = contentMap[id];
 
     if (content !== undefined) {
-      const encoder = new TextEncoder();
-      const uint8Array = encoder.encode(content);
-
-      let binaryString = "";
-      for (let i = 0; i < uint8Array.length; i++) {
-        binaryString += String.fromCharCode(uint8Array[i]);
-      }
-      const base64String = btoa(binaryString);
+      const base64String = btoa(content);
 
       callback({
         status: "succeeded",
@@ -85,27 +77,4 @@ export const mockAttachmentContents = (contentMap: Record<string, string>) => {
       });
     }
   });
-  // if (!mockItem.getAttachmentContentAsync) {
-  //   mockItem.getAttachmentContentAsync = jest.fn();
-  // }
-
-  // mockItem.getAttachmentContentAsync.mockImplementation((id: string, callback: any) => {
-  //   if (id === attachmentId) {
-  //     const encoder = new TextEncoder();
-  //     const arrayBuffer = encoder.encode(content).buffer;
-
-  //     callback({
-  //       status: "succeeded",
-  //       value: {
-  //         content: arrayBuffer,
-  //         format: "base64",
-  //       },
-  //     });
-  //   } else {
-  //     callback({
-  //       status: "failed",
-  //       error: { message: `Attachment ${id} not mocked` },
-  //     });
-  //   }
-  // });
 };
