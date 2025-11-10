@@ -57,10 +57,7 @@ describe("processAttachments - Integration Tests", () => {
       att1: "content1",
       att2: "content2",
     });
-    //The below code sets up the uploadFile() function to succeed the first time
-    // it's called(with the .msg file), succeed the second time it's
-    // called(with the first .pdf attachment), and then fail the third time
-    // it's called(with the second .pdf attachment)
+
     mockUploadFile
       .mockResolvedValueOnce({
         originalName: "Test.msg",
@@ -77,5 +74,51 @@ describe("processAttachments - Integration Tests", () => {
     await expect(processAttachments("Test", true, true)).rejects.toThrow(
       "Second attachment failed"
     );
+  });
+
+  it("returns semicolon-separated paths for multiple attachments", async () => {
+    mockOfficeContextWithAttachments([
+      {
+        id: "att1",
+        name: "document.pdf",
+        size: 1024,
+        contentType: "application/pdf",
+        isInline: false,
+      },
+      {
+        id: "att2",
+        name: "spreadsheet.xlsx",
+        size: 2048,
+        contentType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        isInline: false,
+      },
+      { id: "att3", name: "image.png", size: 512, contentType: "image/png", isInline: false },
+    ]);
+
+    mockAttachmentContents({
+      att1: "PDF file content",
+      att2: "Excel file content",
+      att3: "PNG image data",
+    });
+
+    mockUploadFile.mockImplementation(async (_data, filename, _uniqueId) => {
+      return {
+        originalName: filename,
+        uniqueFilename: `unique_${filename}`,
+        fullPath: `\\\\server\\share\\unique_${filename}`,
+      };
+    });
+
+    const result = await processAttachments("Test Subject", false, true);
+    const paths = result.split(";");
+
+    expect(paths).toHaveLength(3);
+    expect(paths[0]).toContain("document.pdf");
+    expect(paths[1]).toContain("spreadsheet.xlsx");
+    expect(paths[2]).toContain("image.png");
+    paths.forEach((path) => {
+      expect(path).toContain("\\\\server\\share\\");
+    });
+    expect(mockUploadFile).toHaveBeenCalledTimes(3);
   });
 });
