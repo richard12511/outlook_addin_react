@@ -121,4 +121,86 @@ describe("processAttachments - Integration Tests", () => {
     });
     expect(mockUploadFile).toHaveBeenCalledTimes(3);
   });
+
+  it("returns semicolon-separated paths for email and multiple attachments", async () => {
+    mockOfficeContextWithAttachments([
+      { id: "att1", name: "doc1.pdf", size: 1024, contentType: "application/pdf", isInline: false },
+      { id: "att2", name: "doc2.pdf", size: 2048, contentType: "application/pdf", isInline: false },
+    ]);
+
+    mockAttachmentContents({
+      att1: "PDF 1 content",
+      att2: "PDF 2 content",
+    });
+
+    mockUploadFile.mockImplementation(async (_data, filename, _uniqueId) => {
+      return {
+        originalName: filename,
+        uniqueFilename: `unique_${filename}`,
+        fullPath: `\\\\server\\share\\unique_${filename}`,
+      };
+    });
+
+    const result = await processAttachments("Test Subject", true, true);
+    const paths = result.split(";");
+
+    expect(paths).toHaveLength(3);
+    expect(paths[0]).toContain(".msg");
+    expect(paths[1]).toContain("doc1.pdf");
+    expect(paths[2]).toContain("doc2.pdf");
+    expect(mockUploadFile).toHaveBeenCalledTimes(3);
+  });
+
+  it("handles attachments with special characters in the filename", async () => {
+    mockOfficeContextWithAttachments([
+      {
+        id: "att1",
+        name: "Invoice #5025716 (Final) - Q4'2024 [APPROVED].pdf",
+        size: 1024,
+        contentType: "application/pdf",
+        isInline: false,
+      },
+      {
+        id: "att2",
+        name: "Report & Analysis: 50% Complete?.docx",
+        size: 2048,
+        contentType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        isInline: false,
+      },
+    ]);
+
+    mockAttachmentContents({
+      att1: "Invoice PDF content",
+      att2: "Report DOCX content",
+    });
+
+    mockUploadFile.mockImplementation(async (_data, filename, _uniqueId) => {
+      return {
+        originalName: filename,
+        uniqueFilename: `unique_${filename}`,
+        fullPath: `\\\\server\\share\\unique_${filename}`,
+      };
+    });
+
+    const result = await processAttachments("Test Subject", false, true);
+    expect(result).toBeTruthy(); //It should be able to handle special characters
+    const paths = result.split(";");
+
+    // We want to make sure that the uploadFile() call happened with the original filenames
+    expect(mockUploadFile).toHaveBeenNthCalledWith(
+      1,
+      expect.any(ArrayBuffer),
+      "Invoice #5025716 (Final) - Q4'2024 [APPROVED].pdf",
+      expect.any(String)
+    );
+
+    expect(mockUploadFile).toHaveBeenNthCalledWith(
+      2,
+      expect.any(ArrayBuffer),
+      "Report & Analysis: 50% Complete?.docx",
+      expect.any(String)
+    );
+
+    expect(mockUploadFile).toHaveBeenCalledTimes(2);
+  });
 });
