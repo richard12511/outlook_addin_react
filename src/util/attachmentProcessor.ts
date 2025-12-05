@@ -8,7 +8,7 @@ export const processAttachments = async (
   saveEmailAttachments: boolean
 ): Promise<string> => {
   const uploadedPaths: string[] = [];
-
+  console.log("Processing attachments");
   try {
     if (saveEmailMessage) {
       const uniqueId = generateUniqueId();
@@ -26,10 +26,15 @@ export const processAttachments = async (
       for (const attachment of attachments) {
         console.log("Processing attachment: ", attachment);
         const uniqueId = generateUniqueId();
-        const attachmentContent = await getAttachmentContent(attachment.id);
-        console.log("attachmentContent: ", attachmentContent);
+        const { content: attachmentContent, format } = await getAttachmentContent(attachment.id);
+        console.log(`format: ${format}, attachmentContent: ${attachmentContent}`);
 
-        const uploadedFile = await uploadFile(attachmentContent, attachment.name, uniqueId);
+        let filename = attachment.name;
+        if (format === "eml") {
+          filename = `${filename}.eml`;
+        }
+
+        const uploadedFile = await uploadFile(attachmentContent, filename, uniqueId);
         console.log("File uploaded, uploadedFile: ", uploadedFile);
         uploadedPaths.push(uploadedFile.fullPath);
         console.log("uploadedPaths: ", uploadedPaths);

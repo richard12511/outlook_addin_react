@@ -13,6 +13,8 @@ export const uploadFile = async (
   uniqueId: string
 ): Promise<UploadedFile> => {
   const credentials = btoa(`${USERNAME}:${PASSWORD}`);
+
+  console.log(`In uploadFile, originalFilename: ${originalFilename}, uniqueId: ${uniqueId}`);
   const uniqueFilename = createUniqueFilename(originalFilename, uniqueId);
 
   const createFormData = () => {

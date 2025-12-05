@@ -20,7 +20,7 @@ import BpModal from "./BpModal";
 import Tabs from "./Tabs";
 import { searchBusinessPartners } from "../../api/searchBusinessPartners";
 import { getInvolvements } from "../../api/getInvolvements";
-import { getCurrentDate, getCurrentTime, getDefaultDate } from "../../util/dateUtils";
+import { getCurrentTime, getDefaultDate } from "../../util/dateUtils";
 import { buildOutlookActivity } from "../../util/activityUtils";
 import { createActivity } from "../../api/createActivity";
 import { AttachmentsData, BusinessPartner, FollowUpData, Project } from "../../types";
@@ -122,6 +122,8 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
   const [activeTab, setActiveTab] = useState<TabValue>("search");
 
   const handleSave = async () => {
+    console.log("Starting to SAVE!!!");
+
     if (!selectedBP) {
       setMessage("Please select a business partner before saving");
       setMessageType("error");
@@ -147,6 +149,7 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
       //Process attachments
       let attachmentPaths = "";
       if (attachmentsData.saveEmailMessage || attachmentsData.saveEmailAttachments) {
+        console.log("Inside App.tsx, about to start processing attachments");
         try {
           attachmentPaths = await processAttachments(
             subject,
@@ -519,9 +522,6 @@ const App: React.FC<AppProps> = ({ title, isOfficeInitialized }) => {
 
   return (
     <div className={styles.root}>
-      {/* <Header logo={"../../../assets/logo-filled.png"} title="Save Email" message="" /> */}
-
-      {/* Show a message if one exists */}
       {message && (
         <MessageBar intent={messageType} style={{ marginBottom: tokens.spacingVerticalS }}>
           {message}
