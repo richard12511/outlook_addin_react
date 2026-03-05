@@ -16,9 +16,9 @@ describe("processAttachments - Integration Tests", () => {
     mockOfficeContext();
 
     mockUploadFile.mockResolvedValue({
-      originalName: "test.msg",
-      uniqueFilename: "unique_test.msg",
-      fullPath: "\\\\server\\share\\unique_test.msg",
+      originalName: "test.html",
+      uniqueFilename: "unique_test.html",
+      fullPath: "\\\\server\\share\\unique_test.html",
     });
   });
 
@@ -27,7 +27,7 @@ describe("processAttachments - Integration Tests", () => {
 
     expect(result).toBeTruthy(); //make sure it returns something
     expect(result).toContain("\\\\server\\share\\");
-    expect(result).toContain(".msg");
+    expect(result).toContain(".html");
   });
 
   it("returns an empty string when saveEmailMessage and saveAttachment are both unchecked", async () => {
@@ -57,8 +57,8 @@ describe("processAttachments - Integration Tests", () => {
     mockUploadFile
       .mockResolvedValueOnce({
         originalName: "Test.msg",
-        uniqueFilename: "unique_Test.msg",
-        fullPath: "\\\\server\\share\\unique_Test.msg",
+        uniqueFilename: "unique_Test.html",
+        fullPath: "\\\\server\\share\\unique_Test.html",
       })
       .mockResolvedValueOnce({
         originalName: "file1.pdf",
@@ -129,7 +129,19 @@ describe("processAttachments - Integration Tests", () => {
       att2: "PDF 2 content",
     });
 
-    mockUploadFile.mockImplementation(async (_data, filename, _uniqueId) => {
+    const win = global as any;
+    const mockItem = win.Office.context.mailbox.item;
+    console.log("Mock function exists?", !!mockItem.getAttachmentContentAsync);
+    console.log("Mock is a function?", typeof mockItem.getAttachmentContentAsync);
+
+    mockUploadFile.mockImplementation(async (data, filename, _uniqueId) => {
+      console.log("uploadFile called with: ", {
+        dataType: typeof data,
+        dataIsArrayBuffer: data instanceof ArrayBuffer,
+        dataIsUndefined: data === undefined,
+        filename,
+      });
+
       return {
         originalName: filename,
         uniqueFilename: `unique_${filename}`,
@@ -141,7 +153,7 @@ describe("processAttachments - Integration Tests", () => {
     const paths = result.split(";");
 
     expect(paths).toHaveLength(3);
-    expect(paths[0]).toContain(".msg");
+    expect(paths[0]).toContain(".html");
     expect(paths[1]).toContain("doc1.pdf");
     expect(paths[2]).toContain("doc2.pdf");
     expect(mockUploadFile).toHaveBeenCalledTimes(3);

@@ -12,9 +12,10 @@ export const processAttachments = async (
   try {
     if (saveEmailMessage) {
       const uniqueId = generateUniqueId();
+      //UPDATE THIS CONVERT HTML TO MSG
       const emailContent = await getEmailMsgContent();
 
-      const uploadedMsg = await uploadFile(emailContent, `${subject}.msg`, uniqueId);
+      const uploadedMsg = await uploadFile(emailContent, `${subject}.html`, uniqueId);
       uploadedPaths.push(uploadedMsg.fullPath);
       console.log("uploadedPaths: ", uploadedPaths);
     }
