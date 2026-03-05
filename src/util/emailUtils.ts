@@ -83,8 +83,7 @@ export const getAttachmentContent = (
   });
 };
 
-// Get email as .msg file content
-export const getEmailMsgContent = async (): Promise<ArrayBuffer> => {
+export const getEmailMsgContent = (): Promise<ArrayBuffer> => {
   return new Promise((resolve, reject) => {
     const item = Office.context.mailbox.item;
     if (!item) {
@@ -92,19 +91,115 @@ export const getEmailMsgContent = async (): Promise<ArrayBuffer> => {
       return;
     }
 
-    // to get a more complex representation of the email we might need to use EWS or Graph API
-    // this is just a simple representation for now - richard.schmidt
     item.body.getAsync(Office.CoercionType.Html, (result) => {
       if (result.status === Office.AsyncResultStatus.Succeeded) {
-        const msgContent = `Subject: ${item.subject}\nBody: ${result.value}`;
+        // Create proper HTML with metadata
+        const htmlContent = createEmailHTML(item, result.value);
         const encoder = new TextEncoder();
-        resolve(encoder.encode(msgContent).buffer);
+        resolve(encoder.encode(htmlContent).buffer);
       } else {
         reject(new Error("Failed to get email content"));
       }
     });
   });
 };
+
+function createEmailHTML(item: any, bodyHtml: string): string {
+  return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>${item.subject || "(No Subject)"}</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .email-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .email-header {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .email-subject {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .email-meta {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        .email-meta-label {
+            font-weight: 600;
+            display: inline-block;
+            width: 60px;
+        }
+        .email-body {
+            padding-top: 20px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="email-header">
+            <div class="email-subject">${escapeHtml(item.subject || "(No Subject)")}</div>
+            <div class="email-meta">
+                <div><span class="email-meta-label">From: </span>${formatEmailAddress(item.from)}</div>
+                <div><span class="email-meta-label">To: </span>${formatEmailAddresses(item.to)}</div>
+                ${item.cc && item.cc.length > 0 ? `<div><span class="email-meta-label">Cc: </span>${formatEmailAddresses(item.cc)}</div>` : ""}
+                <div><span class="email-meta-label">Date: </span>${formatDate(item.dateTimeCreated || new Date())}</div>
+            </div>
+        </div>
+        <div class="email-body">
+            ${bodyHtml}
+        </div>
+    </div>
+</body>
+</html>
+  `.trim();
+}
+
+function escapeHtml(text: string): string {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function formatEmailAddress(recipient: any): string {
+  if (!recipient) return "Unknown";
+  const name = recipient.displayName || "";
+  const email = recipient.emailAddress || "";
+  return name ? `${escapeHtml(name)} &lt;${escapeHtml(email)}&gt;` : escapeHtml(email);
+}
+
+function formatEmailAddresses(recipients: any[]): string {
+  if (!recipients || recipients.length === 0) return "";
+  return recipients.map((r) => formatEmailAddress(r)).join(", ");
+}
+
+function formatDate(date: Date): string {
+  return date.toLocaleString("en-US", {
+    weekday: "short",
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
 export interface EmailRecipient {
   displayName: string;
