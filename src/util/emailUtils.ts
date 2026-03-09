@@ -1,4 +1,5 @@
 import { unescape } from "querystring";
+import { arrayBuffer } from "stream/consumers";
 
 export const getEmailAttachments = async (): Promise<Office.AttachmentDetails[]> => {
   return new Promise((resolve, _reject) => {
@@ -83,26 +84,128 @@ export const getAttachmentContent = (
   });
 };
 
+// export const getEmailMsgContent = (): Promise<ArrayBuffer> => {
+//   return new Promise((resolve, reject) => {
+//     const item = Office.context.mailbox.item;
+//     if (!item) {
+//       reject(new Error("No email item available"));
+//       return;
+//     }
+
+//     item.body.getAsync(Office.CoercionType.Html, (result) => {
+//       if (result.status === Office.AsyncResultStatus.Succeeded) {
+//         // Create proper HTML with metadata
+//         const htmlContent = createEmailHTML(item, result.value);
+//         const encoder = new TextEncoder();
+//         resolve(encoder.encode(htmlContent).buffer);
+//       } else {
+//         reject(new Error("Failed to get email content"));
+//       }
+//     });
+//   });
+// };
+
+interface ExtendedAttachment extends Office.AttachmentDetails {
+  contentId?: string;
+  isInline: boolean;
+}
+
 export const getEmailMsgContent = (): Promise<ArrayBuffer> => {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const item = Office.context.mailbox.item;
     if (!item) {
       reject(new Error("No email item available"));
       return;
     }
 
-    item.body.getAsync(Office.CoercionType.Html, (result) => {
-      if (result.status === Office.AsyncResultStatus.Succeeded) {
-        // Create proper HTML with metadata
-        const htmlContent = createEmailHTML(item, result.value);
-        const encoder = new TextEncoder();
-        resolve(encoder.encode(htmlContent).buffer);
-      } else {
-        reject(new Error("Failed to get email content"));
+    try {
+      const bodyHtml = await new Promise<string>((resolveBody, rejectBody) => {
+        item.body.getAsync(Office.CoercionType.Html, (result) => {
+          if (result.status === Office.AsyncResultStatus.Succeeded) {
+            resolveBody(result.value);
+          } else {
+            rejectBody(new Error("Failed to get email body"));
+          }
+        });
+      });
+
+      //Go through all the attachments, find the ones that are embedded images, and inline them data urls
+      const attachments = await getEmailAttachments();
+      const inlineImages: Map<string, string> = new Map();
+
+      for (const attachment of attachments) {
+        const att = attachment as ExtendedAttachment;
+
+        if (att.isInline || att.contentId) {
+          try {
+            const { content } = await getAttachmentContent(attachment.id);
+            const base64 = arrayBufferToBase64(content);
+
+            const mimeType = getMimeTypeFromFilename(att.name);
+            const dataUrl = `data:${mimeType};base64,${base64}`;
+
+            const cid = att.contentId || att.name;
+            inlineImages.set(cid, dataUrl);
+
+            console.log(`Processed inline image: ${att.name} (CID: ${cid})`);
+          } catch (err) {
+            console.warn(`Failed to process inline image ${att.name}`, err);
+          }
+        }
       }
-    });
+
+      //Replace CID refs with data urls
+      let processedHtml = bodyHtml;
+      inlineImages.forEach((dataUrl, cid) => {
+        const cleanCid = cid.replace(/^<\>$/g, "");
+        const cidPattern = new RegExp(`cid:${escapeRegex(cleanCid)}`, "gi");
+        processedHtml = processedHtml.replace(cidPattern, dataUrl);
+
+        console.log(
+          `Replacing CIDs with data Urls. cid:${cid}, cleanCid: ${cleanCid}, cidPattern: ${cidPattern} dataUrl: ${dataUrl} `
+        );
+      });
+
+      const completeHtml = createEmailHTML(item, processedHtml);
+
+      const encoder = new TextEncoder();
+      resolve(encoder.encode(completeHtml).buffer);
+    } catch (error) {
+      reject(error);
+    }
   });
 };
+
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
+function getMimeTypeFromFilename(filename: string): string {
+  const ext = filename?.toLowerCase().split(".").pop();
+  console.log(`in getMimeTypeFromFilename, filename: ${filename}, ext: ${ext}`);
+
+  const mimeTypes: Record<string, string> = {
+    png: "image/png",
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    gif: "image/gif",
+    bmp: "image/bmp",
+    svg: "image/svg+xml",
+    webp: "image/webp",
+    ico: "image/x-icon",
+  };
+
+  return mimeTypes[ext || ""] || "image/png"; // Default to PNG
+}
+
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
 function createEmailHTML(item: any, bodyHtml: string): string {
   return `
@@ -110,7 +213,7 @@ function createEmailHTML(item: any, bodyHtml: string): string {
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>${item.subject || "(No Subject)"}</title>
+    <title>${escapeHtml(item.subject || "(No Subject)")}</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -177,6 +280,18 @@ function escapeHtml(text: string): string {
   div.textContent = text;
   return div.innerHTML;
 }
+
+// function escapeHtml(text:string): string {
+//   const map: Record<string, string> = {
+//     '&': '&amp',
+//     '<': '$lt',
+//     '>': '$gt',
+//     '"': '$quot;',
+//     "'": '$&#039'
+//   }
+
+//   return text.replace(/[&<>"']/g", m => map[m])
+// }
 
 function formatEmailAddress(recipient: any): string {
   if (!recipient) return "Unknown";
