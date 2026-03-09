@@ -157,6 +157,7 @@ export const getEmailMsgContent = (): Promise<ArrayBuffer> => {
       //Replace CID refs with data urls
       let processedHtml = bodyHtml;
       inlineImages.forEach((dataUrl, cid) => {
+        //Remove angle brackets from beginning/end, ex: <image.png> -> image.png
         const cleanCid = cid.replace(/^<\>$/g, "");
         const cidPattern = new RegExp(`cid:${escapeRegex(cleanCid)}`, "gi");
         processedHtml = processedHtml.replace(cidPattern, dataUrl);
@@ -204,6 +205,7 @@ function getMimeTypeFromFilename(filename: string): string {
 }
 
 function escapeRegex(str: string): string {
+  //Escapes characters that have special meaning within Regex
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
@@ -276,22 +278,16 @@ function createEmailHTML(item: any, bodyHtml: string): string {
 }
 
 function escapeHtml(text: string): string {
-  const div = document.createElement("div");
-  div.textContent = text;
-  return div.innerHTML;
+  const map: Record<string, string> = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#039;",
+  };
+
+  return text.replace(/[&<>"']/g, (m) => map[m]);
 }
-
-// function escapeHtml(text:string): string {
-//   const map: Record<string, string> = {
-//     '&': '&amp',
-//     '<': '$lt',
-//     '>': '$gt',
-//     '"': '$quot;',
-//     "'": '$&#039'
-//   }
-
-//   return text.replace(/[&<>"']/g", m => map[m])
-// }
 
 function formatEmailAddress(recipient: any): string {
   if (!recipient) return "Unknown";
